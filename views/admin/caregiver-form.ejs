@@ -1,0 +1,65 @@
+<%
+  const isEdit = mode === 'edit';
+%>
+<%- include('partials/head', { pageTitle: isEdit ? 'Edit caregiver' : 'Tambah caregiver', activeMenu: 'caregivers' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const c = caregiver || {};
+  const err = (typeof errors !== 'undefined' && errors) ? errors : {};
+  const action = isEdit ? base + '/caregivers/' + c.id + '/update' : base + '/caregivers';
+  const field = (n) => err[n] ? ' is-invalid' : '';
+  const status = c.status || 'active';
+%>
+<a class="adm-back" href="<%= base %>/caregivers"><%- include('partials/icon', { name: 'arrow-left' }) %> Kembali ke data caregiver</a>
+<div class="adm-pagehead">
+  <div><h1><%= isEdit ? 'Edit caregiver' : 'Tambah caregiver' %></h1><p><%= isEdit ? 'Perbarui data ' + (c.fullName || 'caregiver') + '.' : 'Daftarkan caregiver baru ke CareConnect.' %></p></div>
+</div>
+<div class="adm-form-wrap">
+<form class="cc-card" method="post" action="<%= action %>" novalidate data-validate>
+  <%- include('partials/csrf') %>
+  <div class="cc-card__body">
+    <div class="cc-form-grid">
+      <div class="cc-field cc-field--full">
+        <label class="cc-label" for="fullName">Nama lengkap <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('fullName') %>" id="fullName" name="fullName" value="<%= c.fullName || '' %>" required autocomplete="off">
+        <% if (err.fullName) { %><span class="cc-error"><%= err.fullName %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label" for="email">Email <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('email') %>" id="email" name="email" type="email" value="<%= c.email || '' %>" required autocomplete="off">
+        <% if (err.email) { %><span class="cc-error"><%= err.email %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label" for="phone">Nomor telepon <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('phone') %>" id="phone" name="phone" type="tel" inputmode="tel" pattern="[0-9+\-\s]{8,16}" value="<%= c.phone || '' %>" placeholder="08xxxxxxxxxx" required>
+        <% if (err.phone) { %><span class="cc-error"><%= err.phone %></span><% } %>
+      </div>
+      <div class="cc-field cc-field--full">
+        <label class="cc-label" for="address">Alamat <span class="cc-req">*</span></label>
+        <textarea class="cc-textarea<%= field('address') %>" id="address" name="address" rows="3" required><%= c.address || '' %></textarea>
+        <% if (err.address) { %><span class="cc-error"><%= err.address %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <span class="cc-label" id="statusLbl">Status akun <span class="cc-req">*</span></span>
+        <div class="cc-choice" role="radiogroup" aria-labelledby="statusLbl">
+          <label><input type="radio" name="status" value="active" <%= status === 'active' ? 'checked' : '' %>> Aktif</label>
+          <label><input type="radio" name="status" value="inactive" <%= status === 'inactive' ? 'checked' : '' %>> Nonaktif</label>
+        </div>
+        <span class="cc-help">Caregiver nonaktif tidak bisa ditugaskan ke lansia.</span>
+      </div>
+      <% if (!isEdit) { %>
+      <div class="cc-field">
+        <label class="cc-label" for="password">Kata sandi awal <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('password') %>" id="password" name="password" type="password" minlength="8" autocomplete="new-password" required>
+        <% if (err.password) { %><span class="cc-error"><%= err.password %></span><% } else { %><span class="cc-help">Minimal 8 karakter. Hapus kolom ini bila backend membuat sandi otomatis.</span><% } %>
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <div class="cc-form-actions">
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/caregivers">Batal</a>
+    <button type="submit" class="cc-btn cc-btn--primary"><%- include('partials/icon', { name: 'check' }) %> <%= isEdit ? 'Simpan perubahan' : 'Simpan caregiver' %></button>
+  </div>
+</form>
+</div>
+<%- include('partials/foot') %>

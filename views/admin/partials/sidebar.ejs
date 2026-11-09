@@ -1,0 +1,38 @@
+<%
+  const __base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const __act = typeof activeMenu !== 'undefined' ? activeMenu : '';
+  const __logout = typeof logoutUrl !== 'undefined' ? logoutUrl : '/logout';
+  const __unassigned = (typeof stats !== 'undefined' && stats) ? stats.unassignedResidents
+    : (typeof unassignedCount !== 'undefined' ? unassignedCount
+    : (typeof unassignedResidents !== 'undefined' ? unassignedResidents.length : 0));
+ const __items = [
+  { key: 'dashboard',   label: 'Dashboard',      icon: 'dashboard', href: __base + '/dashboard' },
+  { key: 'residents',   label: 'Data lansia',     icon: 'elder',     href: __base + '/residents' },
+  { key: 'caregivers',  label: 'Data caregiver',  icon: 'heart',     href: __base + '/caregivers' },
+  { key: 'assignments', label: 'Penugasan',       icon: 'link',      href: __base + '/assignments' },
+  { key: 'simulation',  label: 'Simulation',      icon: 'activity',  href: __base + '/simulation' }
+];
+%>
+<aside class="adm-sidebar" id="admSidebar" aria-label="Menu utama">
+  <a class="adm-brand" href="<%= __base %>/dashboard">
+    <span class="adm-brand__mark"><%- include('icon', { name: 'heart' }) %></span>
+    CareConnect
+  </a>
+  <nav class="adm-nav">
+    <span class="adm-nav__group">Menu admin</span>
+    <% __items.forEach(function (it) { %>
+      <a class="adm-nav__link<%= __act === it.key ? ' is-active' : '' %>" href="<%= it.href %>"<%- __act === it.key ? ' aria-current="page"' : '' %>>
+        <%- include('icon', { name: it.icon }) %>
+        <%= it.label %>
+        <% if (it.key === 'assignments' && __unassigned) { %><span class="adm-nav__count adm-nav__count--warn" title="Lansia belum punya caregiver"><%= __unassigned %></span><% } %>
+      </a>
+    <% }) %>
+  </nav>
+  <div class="adm-sidebar__foot">
+    <form method="post" action="<%= __logout %>">
+      <%- include('csrf') %>
+      <button type="submit" class="adm-logout"><%- include('icon', { name: 'logout' }) %> Keluar</button>
+    </form>
+  </div>
+</aside>
+<div class="adm-overlay" data-nav-close></div>

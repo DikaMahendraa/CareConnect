@@ -1,0 +1,22 @@
+<%
+  const __adm = (typeof admin !== 'undefined' && admin) ? admin : { name: 'Admin', role: 'Administrator' };
+  const __alerts = typeof alertCount !== 'undefined' ? alertCount : 0;
+  const __sec = typeof pageTitle !== 'undefined' ? pageTitle : '';
+%>
+<header class="adm-topbar">
+  <button type="button" class="cc-iconbtn adm-topbar__toggle" data-nav-toggle aria-label="Buka menu" aria-controls="admSidebar"><%- include('icon', { name: 'menu' }) %></button>
+  <div>
+    <div class="adm-topbar__title"><%= __sec %></div>
+    <div class="adm-topbar__date" data-today>Panel admin</div>
+  </div>
+  <div class="adm-topbar__right">
+    <span class="cc-iconbtn adm-bell" role="img" aria-label="<%= __alerts %> alert baru">
+      <%- include('icon', { name: 'bell' }) %>
+      <% if (__alerts > 0) { %><span class="adm-bell__dot"><%= __alerts %></span><% } %>
+    </span>
+    <div class="adm-user">
+      <%- include('avatar', { name: __adm.name, tone: 'teal' }) %>
+      <div class="adm-user__text"><div class="adm-user__name"><%= __adm.name %></div><div class="adm-user__role"><%= __adm.role || 'Administrator' %></div></div>
+    </div>
+  </div>
+</header>

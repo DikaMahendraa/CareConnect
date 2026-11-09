@@ -1,0 +1,52 @@
+<%- include('partials/head', { pageTitle: 'Data caregiver', activeMenu: 'caregivers' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+%>
+<div class="adm-pagehead">
+  <div><h1>Data caregiver</h1><p><%= caregivers.length %> caregiver terdaftar</p></div>
+  <div class="adm-pagehead__actions"><a class="cc-btn cc-btn--primary" href="<%= base %>/caregivers/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah caregiver</a></div>
+</div>
+
+<section class="cc-card">
+  <div class="cc-toolbar">
+    <label class="cc-search">
+      <span class="cc-sr">Cari caregiver</span>
+      <%- include('partials/icon', { name: 'search' }) %>
+      <input class="cc-input" type="search" placeholder="Cari nama, email, atau telepon" data-table-search="#caregiverTable">
+    </label>
+    <label>
+      <span class="cc-sr">Filter status akun</span>
+      <select class="cc-select" data-table-filter="#caregiverTable">
+        <option value="">Semua status akun</option>
+        <option value="active">Aktif</option>
+        <option value="inactive">Nonaktif</option>
+      </select>
+    </label>
+  </div>
+  <div class="cc-table-wrap">
+    <table class="cc-table cc-table--stack" id="caregiverTable">
+      <thead><tr><th>Caregiver</th><th>Email</th><th>Telepon</th><th>Alamat</th><th>Lansia</th><th>Status akun</th><th class="cc-th-actions">Aksi</th></tr></thead>
+      <tbody>
+        <% caregivers.forEach(c => { %>
+        <tr data-status="<%= c.status %>">
+          <td class="cc-td-main"><div class="cc-person"><%- include('partials/avatar', { name: c.fullName, tone: 'teal' }) %><a class="cc-person__name" href="<%= base %>/caregivers/<%= c.id %>"><%= c.fullName %></a></div></td>
+          <td data-label="Email"><%= c.email %></td>
+          <td data-label="Telepon"><%= c.phone %></td>
+          <td data-label="Alamat"><div class="cc-clamp" title="<%= c.address %>"><%= c.address %></div></td>
+          <td data-label="Lansia"><%= c.residentCount %> lansia</td>
+          <td data-label="Status akun"><% if (c.status === 'active') { %><span class="cc-badge cc-badge--success">Aktif</span><% } else { %><span class="cc-badge cc-badge--neutral">Nonaktif</span><% } %></td>
+          <td class="cc-td-actions"><div class="cc-actions">
+            <a class="cc-iconbtn cc-iconbtn--primary" href="<%= base %>/caregivers/<%= c.id %>" title="Lihat detail" aria-label="Lihat detail <%= c.fullName %>"><%- include('partials/icon', { name: 'eye' }) %></a>
+            <a class="cc-iconbtn cc-iconbtn--primary" href="<%= base %>/caregivers/<%= c.id %>/edit" title="Edit" aria-label="Edit <%= c.fullName %>"><%- include('partials/icon', { name: 'edit' }) %></a>
+            <button type="button" class="cc-iconbtn cc-iconbtn--danger" title="Hapus" aria-label="Hapus <%= c.fullName %>"
+              data-delete-url="<%= base %>/caregivers/<%= c.id %>/delete" data-delete-name="<%= c.fullName %>"
+              data-delete-text="Akun caregiver akan dihapus dan lansia yang ia tangani menjadi belum punya caregiver."><%- include('partials/icon', { name: 'trash' }) %></button>
+          </div></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="cc-empty" data-empty <%= caregivers.length ? 'hidden' : '' %>><strong>Tidak ada caregiver ditemukan</strong>Ubah kata kunci atau filter, atau tambahkan caregiver baru.</div>
+  </div>
+</section>
+<%- include('partials/foot') %>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alert Center | CareConnect</title>
+    <link rel="stylesheet" href="/css/alerts.css">
+</head>
+<body>
+
+<%
+    const alertRows = typeof alerts !== "undefined" && Array.isArray(alerts)
+        ? alerts
+        : [];
+
+    const currentFilters = typeof filters !== "undefined" && filters
+        ? filters
+        : {};
+
+    const caregiver = typeof caregiverName !== "undefined" && caregiverName
+        ? caregiverName
+        : "Caregiver";
+
+    const pendingCount = typeof unhandledCount === "number"
+        ? unhandledCount
+        : alertRows.filter(a => !["Acknowledged", "Resolved", "Handled"].includes(a.status)).length;
+
+    const highPriorityCount = alertRows.filter(a =>
+        ["High", "Critical"].includes(a.priority || a.severity)
+    ).length;
+
+    function formatDate(value) {
+        if (!value) return "-";
+
+        return new Date(value).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+
+    function getStatusClass(status) {
+        if (status === "Resolved" || status === "Handled") return "resolved";
+        if (status === "Acknowledged") return "acknowledged";
+        return "new";
+    }
+
+    function getPriorityClass(priority) {
+        if (priority === "Critical") return "critical";
+        if (priority === "High") return "high";
+        if (priority === "Low") return "low";
+        return "medium";
+    }
+%>
+
+<div class="cc-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="cc-sidebar">
+
+        <div class="cc-brand">
+            <div class="cc-brand-icon">C</div>
+            <div>
+                <h2>CareConnect</h2>
+                <span>Caregiver Portal</span>
+            </div>
+        </div>
+
+        <div class="cc-sidebar-label">WORKSPACE</div>
+
+        <nav class="cc-navigation">
+
+            <a href="/caregiver/dashboard" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/caregiver/residents" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="9" cy="8" r="3"/>
+                        <path d="M3 20v-1a6 6 0 0 1 12 0v1"/>
+                        <path d="M16 5a3 3 0 0 1 0 6"/>
+                        <path d="M18 14a5 5 0 0 1 3 5v1"/>
+                    </svg>
+                </span>
+                <span>Daftar Lansia</span>
+            </a>
+
+            <a href="/caregiver/monitoring" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 12h4l3-8 4 16 3-8h4"/>
+                    </svg>
+                </span>
+                <span>Monitoring</span>
+            </a>
+
+            <a href="/caregiver/alerts" class="cc-nav-link active">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                        <path d="M10 21h4"/>
+                    </svg>
+                </span>
+                <span>Alert Center</span>
+
+                <% if (pendingCount > 0) { %>
+                    <span class="cc-nav-badge"><%= pendingCount %></span>
+                <% } %>
+            </a>
+
+        </nav>
+
+        <div class="cc-sidebar-bottom">
+            <form action="/logout" method="POST">
+                <button type="submit" class="cc-logout">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5"/>
+                        <path d="M15 12H3"/>
+                        <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
+                    </svg>
+                    <span>Log out</span>
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="cc-main">
+
+        <!-- TOPBAR -->
+        <header class="cc-topbar">
+
+            <div class="cc-breadcrumb">
+                Caregiver <span>/</span> <strong>Alert Center</strong>
+            </div>
+
+            <div class="cc-topbar-right">
+
+                <div class="cc-workspace-status">
+                    <span class="cc-status-dot"></span>
+                    Caregiver Workspace
+                </div>
+
+                <div class="cc-topbar-profile">
+                    <div class="cc-topbar-avatar">
+                        <%= caregiver.charAt(0).toUpperCase() %>
+                    </div>
+
+                    <div class="cc-topbar-profile-info">
+                        <strong><%= caregiver %></strong>
+                        <span>Caregiver</span>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- PAGE CONTENT -->
+        <section class="cc-content">
+
+            <div class="cc-page-heading">
+                <div>
+                    <span class="cc-eyebrow">NOTIFICATION MANAGEMENT</span>
+                    <h1>Alert Center</h1>
+                    <p>Monitor and manage alerts from your assigned residents.</p>
+                </div>
+
+                <div class="cc-heading-date">
+                    <span>CARECONNECT</span>
+                    <strong>Monitoring System</strong>
+                </div>
+            </div>
+
+            <!-- SUMMARY -->
+            <div class="cc-summary-grid">
+
+                <div class="cc-summary-card">
+                    <div class="cc-summary-top">
+                        <span class="cc-summary-label">Belum Ditangani</span>
+                        <div class="cc-summary-icon orange">!</div>
+                    </div>
+                    <h2><%= pendingCount %></h2>
+                    <p>Alerts requiring attention</p>
+                </div>
+
+                <div class="cc-summary-card">
+                    <div class="cc-summary-top">
+                        <span class="cc-summary-label">Total Peringatan</span>
+                        <div class="cc-summary-icon blue">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                                <path d="M10 21h4"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2><%= alertRows.length %></h2>
+                    <p>Total alerts in your assignment</p>
+                </div>
+
+                <div class="cc-summary-card">
+                    <div class="cc-summary-top">
+                        <span class="cc-summary-label">Prioritas Tinggi</span>
+                        <div class="cc-summary-icon red">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3L2.5 20h19L12 3z"/>
+                                <path d="M12 9v5"/>
+                                <path d="M12 17h.01"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2><%= highPriorityCount %></h2>
+                    <p>High and critical priority</p>
+                </div>
+
+            </div>
+
+            <!-- ALERT TABLE -->
+            <section class="cc-panel">
+
+                <div class="cc-panel-header">
+                    <div>
+                        <h2>Recent Alerts</h2>
+                        <p>Review and manage resident notifications.</p>
+                    </div>
+
+                    <span class="cc-total-label">
+                        <%= alertRows.length %> Notifications
+                    </span>
+                </div>
+
+                <!-- FILTER -->
+                <form action="/caregiver/alerts" method="GET" class="cc-filter-form">
+
+                    <div class="cc-filter-label">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M4 5h16l-6 7v6l-4 2v-8L4 5z"/>
+                        </svg>
+                        Filter status
+                    </div>
+
+                    <select name="status" onchange="this.form.submit()">
+                        <option value="">All Status</option>
+                        <option value="New" <%= currentFilters.status === "New" ? "selected" : "" %>>
+                            New
+                        </option>
+                        <option value="Acknowledged" <%= currentFilters.status === "Acknowledged" ? "selected" : "" %>>
+                            Acknowledged
+                        </option>
+                        <option value="Resolved" <%= currentFilters.status === "Resolved" ? "selected" : "" %>>
+                            Resolved
+                        </option>
+                    </select>
+
+                    <% if (currentFilters.status) { %>
+                        <a href="/caregiver/alerts" class="cc-reset-filter">
+                            Reset filter
+                        </a>
+                    <% } %>
+
+                </form>
+
+                <!-- TABLE -->
+                <% if (alertRows.length > 0) { %>
+
+                    <div class="cc-table-wrapper">
+                        <table class="cc-table">
+
+                            <thead>
+                                <tr>
+                                    <th>RESIDENT</th>
+                                    <th>ALERT INFORMATION</th>
+                                    <th>TIME</th>
+                                    <th>PRIORITY</th>
+                                    <th>STATUS</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% alertRows.forEach(alert => { %>
+
+                                    <%
+                                        const priority = alert.priority || alert.severity || "Medium";
+                                        const status = alert.status || "New";
+                                        const residentName = alert.resident_name || alert.nama_lansia || "Unknown Resident";
+                                        const alertTitle = alert.alert_type_label || alert.alert_type || "Activity Alert";
+                                        const alertDescription = alert.description || alert.message || "-";
+                                        const alertTime = alert.occurred_at || alert.created_at;
+                                    %>
+
+                                    <tr>
+
+                                        <td>
+                                            <div class="cc-resident-cell">
+                                                <div class="cc-resident-avatar">
+                                                    <%= residentName.charAt(0).toUpperCase() %>
+                                                </div>
+                                                <div>
+                                                    <strong><%= residentName %></strong>
+                                                    <span>Daftar Lansia</span>
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <div class="cc-alert-information">
+                                                <strong><%= alertTitle %></strong>
+                                                <span><%= alertDescription %></span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <span class="cc-time">
+                                                <%= formatDate(alertTime) %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="cc-priority <%= getPriorityClass(priority) %>">
+                                                <%= priority %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <span class="cc-status <%= getStatusClass(status) %>">
+                                                <%= status %>
+                                            </span>
+                                        </td>
+
+                                        <td>
+                                            <a href="/caregiver/alerts/<%= alert.id %>" class="cc-detail-link">
+                                                View Details
+                                                <span>→</span>
+                                            </a>
+                                        </td>
+
+                                    </tr>
+
+                                <% }) %>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                <% } else { %>
+
+                    <div class="cc-empty-state">
+                        <div class="cc-empty-icon">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                                <path d="M10 21h4"/>
+                            </svg>
+                        </div>
+
+                        <h3>No alerts found</h3>
+                        <p>There are currently no notifications matching your filter.</p>
+
+                        <% if (currentFilters.status) { %>
+                            <a href="/caregiver/alerts" class="cc-empty-link">
+                                Clear filter
+                            </a>
+                        <% } %>
+                    </div>
+
+                <% } %>
+
+            </section>
+
+            <footer class="cc-footer">
+                <span>CareConnect</span>
+                <span>Caregiver Monitoring Platform</span>
+            </footer>
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

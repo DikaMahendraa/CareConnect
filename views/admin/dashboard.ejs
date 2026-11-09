@@ -1,0 +1,102 @@
+
+<%- include('partials/head', { pageTitle: 'Dashboard', activeMenu: 'dashboard' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const when = d => d ? new Date(d).toLocaleString('id-ID', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : '-';
+  const pct = stats.totalResidents ? Math.round(stats.assignedResidents / stats.totalResidents * 100) : 0;
+  const C = 2 * Math.PI * 52;
+  const actIcon = { medication: 'pill', meal: 'meal', vital: 'activity' };
+  const levelMap = { high: ['danger', 'Tinggi'], medium: ['warning', 'Sedang'], low: ['primary', 'Rendah'] };
+%>
+<div class="adm-pagehead">
+  <div>
+    <h1>Ringkasan hari ini</h1>
+    <p>Pantau cakupan caregiver, aktivitas, dan alert lansia.</p>
+  </div>
+  <div class="adm-pagehead__actions">
+    <a class="cc-btn cc-btn--primary" href="<%= base %>/residents/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah lansia</a>
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/caregivers/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah caregiver</a>
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/assignments"><%- include('partials/icon', { name: 'link' }) %> Atur penugasan</a>
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/simulation"><%- include('partials/icon', { name: 'activity' }) %> Simulation</a>
+  </div>
+</div>
+
+<section class="adm-stats" aria-label="Statistik utama">
+  <a class="cc-card adm-stat" href="<%= base %>/residents">
+    <span class="adm-stat__icon adm-stat__icon--primary"><%- include('partials/icon', { name: 'elder' }) %></span>
+    <span><div class="adm-stat__value"><%= stats.totalResidents %></div><div class="adm-stat__label">Total lansia terdaftar</div></span>
+  </a>
+  <a class="cc-card adm-stat" href="<%= base %>/caregivers">
+    <span class="adm-stat__icon adm-stat__icon--teal"><%- include('partials/icon', { name: 'heart' }) %></span>
+    <span><div class="adm-stat__value"><%= stats.totalCaregivers %></div><div class="adm-stat__label">Total caregiver terdaftar</div></span>
+  </a>
+  <a class="cc-card adm-stat" href="<%= base %>/assignments">
+    <span class="adm-stat__icon adm-stat__icon--teal"><%- include('partials/icon', { name: 'user-check' }) %></span>
+    <span><div class="adm-stat__value"><%= stats.assignedResidents %></div><div class="adm-stat__label">Lansia sudah punya caregiver</div></span>
+  </a>
+  <a class="cc-card adm-stat<%= stats.unassignedResidents > 0 ? ' adm-stat--attention' : '' %>" href="<%= base %>/assignments">
+    <span class="adm-stat__icon adm-stat__icon--warning"><%- include('partials/icon', { name: 'user-x' }) %></span>
+    <span><div class="adm-stat__value"><%= stats.unassignedResidents %></div><div class="adm-stat__label">Lansia belum punya caregiver</div></span>
+  </a>
+</section>
+
+<div class="adm-grid">
+  <section class="cc-card" aria-labelledby="actTitle">
+    <div class="cc-card__head">
+      <div><h2 class="cc-card__title" id="actTitle">Aktivitas terbaru</h2><p class="cc-card__sub">Dicatat oleh caregiver</p></div>
+    </div>
+    <% if (recentActivities.length) { %>
+    <ul class="adm-feed">
+      <% recentActivities.forEach(a => { %>
+      <li>
+        <span class="adm-feed__icon<%= a.type === 'meal' ? ' adm-feed__icon--teal' : '' %>"><%- include('partials/icon', { name: actIcon[a.type] || 'check' }) %></span>
+        <div class="adm-feed__main">
+          <div class="adm-feed__title"><%= a.title %></div>
+          <div class="adm-feed__meta"><%= a.residentName %> &middot; oleh <%= a.caregiverName %></div>
+        </div>
+        <time class="adm-feed__time" datetime="<%= a.createdAt %>"><%= when(a.createdAt) %></time>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <div class="cc-empty"><strong>Belum ada aktivitas</strong>Aktivitas yang dicatat caregiver akan muncul di sini.</div>
+    <% } %>
+  </section>
+
+  <div class="adm-stack">
+    <section class="cc-card" aria-labelledby="covTitle">
+      <div class="cc-card__head"><h2 class="cc-card__title" id="covTitle">Cakupan penugasan</h2><a class="cc-btn cc-btn--outline cc-btn--sm" href="<%= base %>/assignments">Kelola</a></div>
+      <div class="cc-card__body adm-coverage">
+        <div class="adm-donut" role="img" aria-label="<%= pct %> persen lansia sudah punya caregiver">
+          <svg viewBox="0 0 132 132"><circle class="adm-donut__track" cx="66" cy="66" r="52"/><circle class="adm-donut__fill" cx="66" cy="66" r="52" stroke-dasharray="<%= (C * pct / 100).toFixed(1) %> <%= C.toFixed(1) %>"/></svg>
+          <div class="adm-donut__center"><span class="adm-donut__pct"><%= pct %>%</span><span class="adm-donut__cap">tercakup</span></div>
+        </div>
+        <ul class="adm-legend">
+          <li><i style="background:var(--cc-secondary)"></i>Sudah punya caregiver <b><%= stats.assignedResidents %></b></li>
+          <li><i style="background:var(--cc-warning)"></i>Belum punya caregiver <b><%= stats.unassignedResidents %></b></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="cc-card" aria-labelledby="alrTitle">
+      <div class="cc-card__head"><div><h2 class="cc-card__title" id="alrTitle">Alert terbaru</h2><p class="cc-card__sub">Perlu perhatian admin</p></div></div>
+      <% if (recentAlerts.length) { %>
+      <ul class="adm-feed">
+        <% recentAlerts.forEach(al => { const lv = levelMap[al.level] || levelMap.low; %>
+        <li>
+          <span class="adm-feed__icon adm-feed__icon--<%= lv[0] === 'primary' ? '' : lv[0] %>"><%- include('partials/icon', { name: 'alert' }) %></span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title"><%= al.message %></div>
+            <div class="adm-feed__meta"><%= al.residentName %> &middot; <%= when(al.createdAt) %></div>
+          </div>
+          <span class="cc-badge cc-badge--<%= lv[0] %>"><%= lv[1] %></span>
+        </li>
+        <% }) %>
+      </ul>
+      <% } else { %>
+      <div class="cc-empty"><strong>Tidak ada alert</strong>Semua lansia dalam kondisi aman.</div>
+      <% } %>
+    </section>
+  </div>
+</div>
+<%- include('partials/foot') %>

@@ -1,0 +1,256 @@
+<%- include('partials/head', { pageTitle: 'Simulation', activeMenu: 'simulation' }) %>
+
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const residentList = Array.isArray(residents) ? residents : [];
+  const queryError = typeof error !== 'undefined' ? error : '';
+  const successMessage = success === 'created';
+%>
+
+<div class="adm-pagehead">
+  <div>
+    <h1>Activity Simulation</h1>
+    <p>Kelola dan simulasikan aktivitas lansia untuk menguji sistem monitoring CareConnect.</p>
+  </div>
+
+  <div class="adm-pagehead__actions">
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/dashboard">
+      <%- include('partials/icon', { name: 'dashboard' }) %>
+      Kembali ke dashboard
+    </a>
+  </div>
+</div>
+
+<% if (successMessage) { %>
+  <div class="cc-card" style="margin-bottom:20px; padding:16px;">
+    <strong style="color:var(--cc-secondary);">Simulasi berhasil dibuat</strong>
+    <p class="cc-card__sub" style="margin-top:5px;">
+      Event aktivitas berhasil disimpan dan alert telah dibuat jika jenis event memerlukannya.
+    </p>
+  </div>
+<% } %>
+
+<% if (queryError) { %>
+  <div class="cc-card" style="margin-bottom:20px; padding:16px;">
+    <strong style="color:var(--cc-danger);">Simulasi gagal diproses</strong>
+    <p class="cc-card__sub" style="margin-top:5px;">
+      Periksa kembali data yang dimasukkan dan coba lagi.
+    </p>
+  </div>
+<% } %>
+
+<section class="adm-stats" aria-label="Informasi simulasi">
+
+  <div class="cc-card adm-stat">
+    <span class="adm-stat__icon adm-stat__icon--primary">
+      <%- include('partials/icon', { name: 'elder' }) %>
+    </span>
+    <span>
+      <div class="adm-stat__value"><%= residentList.length %></div>
+      <div class="adm-stat__label">Lansia tersedia untuk simulasi</div>
+    </span>
+  </div>
+
+  <div class="cc-card adm-stat">
+    <span class="adm-stat__icon adm-stat__icon--teal">
+      <%- include('partials/icon', { name: 'activity' }) %>
+    </span>
+    <span>
+      <div class="adm-stat__value">6</div>
+      <div class="adm-stat__label">Jenis event tersedia</div>
+    </span>
+  </div>
+
+  <div class="cc-card adm-stat">
+    <span class="adm-stat__icon adm-stat__icon--warning">
+      <%- include('partials/icon', { name: 'alert' }) %>
+    </span>
+    <span>
+      <div class="adm-stat__value">3</div>
+      <div class="adm-stat__label">Jenis event menghasilkan alert</div>
+    </span>
+  </div>
+
+</section>
+
+<div class="adm-grid">
+
+  <!-- FORM SIMULASI -->
+  <section class="cc-card" aria-labelledby="simulationTitle">
+
+    <div class="cc-card__head">
+      <div>
+        <h2 class="cc-card__title" id="simulationTitle">Buat simulasi aktivitas</h2>
+        <p class="cc-card__sub">Masukkan informasi untuk menghasilkan event baru.</p>
+      </div>
+    </div>
+
+    <div class="cc-card__body">
+
+      <form action="<%= base %>/simulation" method="POST">
+
+        <%- include('partials/csrf') %>
+
+        <div style="margin-bottom:20px;">
+          <label for="residentId" style="display:block; margin-bottom:8px; font-weight:600;">
+            Pilih lansia
+          </label>
+
+          <select class="cc-select" id="residentId" name="residentId" required style="width:100%;">
+            <option value="">-- Pilih lansia --</option>
+
+            <% residentList.forEach(resident => { %>
+              <option value="<%= resident.id %>">
+                <%= resident.nama %>
+              </option>
+            <% }) %>
+          </select>
+        </div>
+
+        <div style="margin-bottom:20px;">
+          <label for="eventType" style="display:block; margin-bottom:8px; font-weight:600;">
+            Jenis aktivitas
+          </label>
+
+          <select class="cc-select" id="eventType" name="eventType" required style="width:100%;">
+            <option value="">-- Pilih jenis aktivitas --</option>
+            <option value="Normal Activity">Normal Activity</option>
+            <option value="Outside">Outside</option>
+            <option value="Returned">Returned</option>
+            <option value="No Movement">No Movement</option>
+            <option value="Possible Fall">Possible Fall</option>
+            <option value="Sensor Offline">Sensor Offline</option>
+          </select>
+        </div>
+
+        <div style="margin-bottom:22px;">
+          <label for="description" style="display:block; margin-bottom:8px; font-weight:600;">
+            Deskripsi aktivitas
+          </label>
+
+          <textarea
+            class="cc-input"
+            id="description"
+            name="description"
+            rows="4"
+            placeholder="Masukkan keterangan aktivitas yang disimulasikan..."
+            style="width:100%; resize:vertical;"
+          ></textarea>
+        </div>
+
+        <button type="submit" class="cc-btn cc-btn--primary">
+          <%- include('partials/icon', { name: 'activity' }) %>
+          Generate Simulation
+        </button>
+
+      </form>
+
+    </div>
+  </section>
+
+  <!-- INFORMASI SIMULASI -->
+  <div class="adm-stack">
+
+    <section class="cc-card" aria-labelledby="eventInfoTitle">
+
+      <div class="cc-card__head">
+        <div>
+          <h2 class="cc-card__title" id="eventInfoTitle">Informasi event</h2>
+          <p class="cc-card__sub">Jenis aktivitas yang dapat disimulasikan.</p>
+        </div>
+      </div>
+
+      <ul class="adm-feed">
+
+        <li>
+          <span class="adm-feed__icon adm-feed__icon--teal">
+            <%- include('partials/icon', { name: 'activity' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">Normal Activity</div>
+            <div class="adm-feed__meta">Aktivitas normal lansia.</div>
+          </div>
+          <span class="cc-badge cc-badge--primary">Normal</span>
+        </li>
+
+        <li>
+          <span class="adm-feed__icon">
+            <%- include('partials/icon', { name: 'home' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">Outside</div>
+            <div class="adm-feed__meta">Lansia meninggalkan rumah.</div>
+          </div>
+        </li>
+
+        <li>
+          <span class="adm-feed__icon adm-feed__icon--teal">
+            <%- include('partials/icon', { name: 'home' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">Returned</div>
+            <div class="adm-feed__meta">Lansia kembali ke rumah.</div>
+          </div>
+        </li>
+
+        <li>
+          <span class="adm-feed__icon adm-feed__icon--warning">
+            <%- include('partials/icon', { name: 'alert' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">No Movement</div>
+            <div class="adm-feed__meta">Tidak terdeteksi pergerakan.</div>
+          </div>
+          <span class="cc-badge cc-badge--warning">High</span>
+        </li>
+
+        <li>
+          <span class="adm-feed__icon adm-feed__icon--danger">
+            <%- include('partials/icon', { name: 'alert' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">Possible Fall</div>
+            <div class="adm-feed__meta">Simulasi kemungkinan terjatuh.</div>
+          </div>
+          <span class="cc-badge cc-badge--danger">Critical</span>
+        </li>
+
+        <li>
+          <span class="adm-feed__icon">
+            <%- include('partials/icon', { name: 'activity' }) %>
+          </span>
+          <div class="adm-feed__main">
+            <div class="adm-feed__title">Sensor Offline</div>
+            <div class="adm-feed__meta">Simulasi perangkat tidak aktif.</div>
+          </div>
+          <span class="cc-badge cc-badge--warning">Medium</span>
+        </li>
+
+      </ul>
+    </section>
+
+    <section class="cc-card" aria-labelledby="simulationNoteTitle">
+      <div class="cc-card__head">
+        <div>
+          <h2 class="cc-card__title" id="simulationNoteTitle">Catatan simulasi</h2>
+          <p class="cc-card__sub">Cara kerja fitur ini.</p>
+        </div>
+      </div>
+
+      <div class="cc-card__body">
+        <p style="font-size:12px; line-height:1.8; color:var(--cc-muted);">
+          Setiap event yang dibuat akan disimpan ke riwayat aktivitas lansia.
+          Event tertentu seperti Possible Fall, No Movement, dan Sensor Offline
+          juga akan menghasilkan alert untuk caregiver yang bertugas.
+        </p>
+
+        <div style="margin-top:14px;">
+          <span class="cc-badge cc-badge--warning">Simulation Only</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<%- include('partials/foot') %>

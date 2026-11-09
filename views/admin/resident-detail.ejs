@@ -1,0 +1,52 @@
+<%- include('partials/head', { pageTitle: 'Detail lansia', activeMenu: 'residents' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const r = resident;
+  const born = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' }) : '-';
+%>
+<a class="adm-back" href="<%= base %>/residents"><%- include('partials/icon', { name: 'arrow-left' }) %> Kembali ke data lansia</a>
+<div class="adm-pagehead">
+  <div class="adm-profile">
+    <%- include('partials/avatar', { name: r.fullName, size: 'lg' }) %>
+    <div>
+      <h2><%= r.fullName %></h2>
+      <p><%= r.age %> tahun &middot; <%= r.gender === 'L' ? 'Laki-laki' : 'Perempuan' %></p>
+    </div>
+    <% if (r.caregiver) { %><span class="cc-badge cc-badge--success">Sudah punya caregiver</span><% } else { %><span class="cc-badge cc-badge--warning">Belum ada caregiver</span><% } %>
+  </div>
+  <div class="adm-pagehead__actions">
+    <a class="cc-btn cc-btn--primary" href="<%= base %>/residents/<%= r.id %>/edit"><%- include('partials/icon', { name: 'edit' }) %> Edit data</a>
+    <button type="button" class="cc-btn cc-btn--outline" data-delete-url="<%= base %>/residents/<%= r.id %>/delete" data-delete-name="<%= r.fullName %>" data-delete-text="Data lansia dan penugasan caregiver-nya akan ikut terhapus."><%- include('partials/icon', { name: 'trash' }) %> Hapus</button>
+  </div>
+</div>
+<div class="adm-detail-grid">
+  <section class="cc-card">
+    <div class="cc-card__head"><h2 class="cc-card__title">Informasi lansia</h2></div>
+    <div class="cc-card__body">
+      <dl class="cc-dl">
+        <dt>Nama lengkap</dt><dd><%= r.fullName %></dd>
+        <dt>Tanggal lahir</dt><dd><%= born(r.birthDate) %> (<%= r.age %> tahun)</dd>
+        <dt>Jenis kelamin</dt><dd><%= r.gender === 'L' ? 'Laki-laki' : 'Perempuan' %></dd>
+        <dt>Alamat</dt><dd><%= r.address %></dd>
+        <dt>Nomor telepon</dt><dd><%= r.phone || '-' %></dd>
+        <dt>Kontak keluarga</dt><dd><%= r.familyContactName %> &middot; <%= r.familyContactPhone %></dd>
+      </dl>
+    </div>
+  </section>
+  <section class="cc-card">
+    <div class="cc-card__head"><h2 class="cc-card__title">Caregiver</h2></div>
+    <div class="cc-card__body">
+      <% if (r.caregiver) { %>
+        <div class="cc-person">
+          <%- include('partials/avatar', { name: r.caregiver.fullName, tone: 'teal' }) %>
+          <div><a class="cc-person__name" href="<%= base %>/caregivers/<%= r.caregiver.id %>"><%= r.caregiver.fullName %></a><div class="cc-person__sub"><%= r.caregiver.phone %></div></div>
+        </div>
+        <a class="cc-btn cc-btn--outline cc-btn--sm" style="margin-top:1.1rem" href="<%= base %>/assignments"><%- include('partials/icon', { name: 'link' }) %> Ubah penugasan</a>
+      <% } else { %>
+        <div class="adm-callout"><strong>Belum ada caregiver</strong>Lansia ini belum dipantau siapa pun.
+          <br><a class="cc-btn cc-btn--primary cc-btn--sm" href="<%= base %>/assignments?residentId=<%= r.id %>">Tugaskan caregiver</a></div>
+      <% } %>
+    </div>
+  </section>
+</div>
+<%- include('partials/foot') %>

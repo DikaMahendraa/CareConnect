@@ -1,0 +1,13 @@
+<dialog class="cc-dialog" id="deleteDialog" aria-labelledby="deleteTitle">
+  <form method="post" action="#" data-delete-form>
+    <%- include('csrf') %>
+    <div class="cc-dialog__body">
+      <h2 class="cc-dialog__title" id="deleteTitle" data-delete-title>Hapus data ini?</h2>
+      <p class="cc-muted" data-delete-text>Data yang dihapus tidak dapat dikembalikan.</p>
+    </div>
+    <div class="cc-dialog__foot">
+      <button type="button" class="cc-btn cc-btn--outline" data-dialog-close>Batal</button>
+      <button type="submit" class="cc-btn cc-btn--danger"><%- include('icon', { name: 'trash' }) %> Hapus</button>
+    </div>
+  </form>
+</dialog>

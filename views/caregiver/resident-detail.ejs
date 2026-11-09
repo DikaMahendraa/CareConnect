@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Lansia | CareConnect</title>
+    <link rel="stylesheet" href="/css/caregiver.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>Care<span>Connect</span></h2>
+            <p>Caregiver Portal</p>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="/caregiver/dashboard">Dashboard</a>
+            <a href="/caregiver/residents" class="active">Daftar Lansia</a>
+            <a href="/caregiver/monitoring">Monitoring Aktivitas</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Caregiver Account</p>
+            <a href="/logout">Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <h1>Detail Lansia</h1>
+                <p>Informasi lengkap lansia yang Anda dampingi.</p>
+            </div>
+
+            <div class="profile">
+                <div class="avatar">C</div>
+                <span>Caregiver</span>
+            </div>
+        </header>
+
+        <% const resident = typeof residentDetail !== 'undefined' ? residentDetail : null; %>
+
+        <% if (resident) { %>
+
+            <!-- RESIDENT PROFILE -->
+            <section class="content-section resident-profile-section">
+
+                <div class="resident-profile-header">
+
+                    <div class="resident-profile-photo">
+                        <% if (resident.foto) { %>
+                            <img src="<%= resident.foto %>" alt="Foto lansia">
+                        <% } else { %>
+                            <div class="resident-avatar">
+                                <%= resident.nama.charAt(0).toUpperCase() %>
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div>
+                        <h2><%= resident.nama %></h2>
+                        <p>Informasi profil lansia</p>
+                    </div>
+
+                </div>
+
+                <div class="resident-detail-grid">
+
+                    <div>
+                        <span>Usia</span>
+                        <strong><%= resident.usia %> tahun</strong>
+                    </div>
+
+                    <div>
+                        <span>Jenis Kelamin</span>
+                        <strong><%= resident.jenis_kelamin || '-' %></strong>
+                    </div>
+
+                    <div>
+                        <span>Alamat</span>
+                        <strong><%= resident.alamat || '-' %></strong>
+                    </div>
+
+                    <div>
+                        <span>Caregiver</span>
+                        <strong><%= resident.nama_caregiver || '-' %></strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- ACTIVITY HISTORY -->
+            <section class="content-section">
+
+                <div class="section-header">
+                    <div>
+                        <h2>Riwayat Aktivitas</h2>
+                        <p>Catatan aktivitas lansia.</p>
+                    </div>
+                </div>
+
+                <% if (resident.activities && resident.activities.length > 0) { %>
+
+                    <div class="detail-activity-list">
+
+                        <% resident.activities.forEach(activity => { %>
+
+                            <div class="detail-activity-item">
+
+                                <div>
+                                    <strong><%= activity.jenis_aktivitas %></strong>
+                                    <p><%= activity.waktu %></p>
+                                </div>
+
+                                <span class="status-badge status-home">
+                                    <%= activity.status %>
+                                </span>
+
+                            </div>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="empty-state">
+                        <h3>Belum Ada Riwayat Aktivitas</h3>
+                        <p>Riwayat aktivitas lansia akan ditampilkan di sini.</p>
+                    </div>
+
+                <% } %>
+
+            </section>
+
+        <% } else { %>
+
+            <section class="content-section">
+
+                <div class="section-header">
+                    <div>
+                        <h2>Informasi Lansia</h2>
+                        <p>Detail identitas dan pendampingan lansia.</p>
+                    </div>
+
+                    <a href="/caregiver/residents">Kembali ke daftar</a>
+                </div>
+
+                <div class="empty-state">
+                    <h3>Data Lansia Belum Tersedia</h3>
+                    <p>Informasi lansia akan ditampilkan setelah data tersedia.</p>
+                </div>
+
+            </section>
+
+        <% } %>
+
+    </main>
+
+</div>
+
+<script src="/js/caregiver.js"></script>
+</body>
+</html>
