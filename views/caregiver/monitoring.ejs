@@ -1,0 +1,213 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Aktivitas | CareConnect</title>
+    <link rel="stylesheet" href="/css/caregiver.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="brand">
+            <h2>Care<span>Connect</span></h2>
+            <p>Caregiver Portal</p>
+        </div>
+
+        <nav class="sidebar-menu">
+            <a href="/caregiver/dashboard">Dashboard</a>
+            <a href="/caregiver/residents">Daftar Lansia</a>
+            <a href="/caregiver/monitoring" class="active">Monitoring Aktivitas</a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <p>Caregiver Account</p>
+            <a href="/logout">Logout</a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <!-- HEADER -->
+        <header class="topbar">
+            <div>
+                <h1>Monitoring Aktivitas</h1>
+                <p>Pantau pergerakan dan aktivitas lansia secara berkala.</p>
+            </div>
+
+            <div class="profile">
+                <div class="avatar">C</div>
+                <span>Caregiver</span>
+            </div>
+        </header>
+
+        <%
+            const stats = typeof monitoringStats !== 'undefined'
+                ? monitoringStats
+                : {};
+
+            const activityList = typeof activities !== 'undefined'
+                ? activities
+                : [];
+        %>
+
+        <!-- MONITORING SUMMARY -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <p>At Home</p>
+                <h2><%= stats.atHome || 0 %></h2>
+                <span>Lansia berada di rumah</span>
+            </div>
+
+            <div class="stat-card">
+                <p>Outside</p>
+                <h2><%= stats.outside || 0 %></h2>
+                <span>Lansia berada di luar</span>
+            </div>
+
+            <div class="stat-card alert-card">
+                <p>No Movement</p>
+                <h2><%= stats.noMovement || 0 %></h2>
+                <span>Belum terdeteksi pergerakan</span>
+            </div>
+
+        </section>
+
+        <!-- ADDITIONAL INFORMATION -->
+        <section class="monitoring-info-grid">
+
+            <div class="monitoring-info-card">
+                <p>Aktivitas Terakhir</p>
+
+                <h3>
+                    <%= stats.lastActivity || 'Belum tersedia' %>
+                </h3>
+
+                <span>Waktu aktivitas terbaru</span>
+            </div>
+
+            <div class="monitoring-info-card">
+                <p>Durasi di Luar Rumah</p>
+
+                <h3>
+                    <%= stats.outsideDuration || 'Belum tersedia' %>
+                </h3>
+
+                <span>Durasi lansia berada di luar</span>
+            </div>
+
+        </section>
+
+        <!-- ACTIVITY HISTORY -->
+        <section class="content-section">
+
+            <div class="section-header">
+                <div>
+                    <h2>Riwayat Aktivitas</h2>
+                    <p>Catatan aktivitas lansia berdasarkan waktu.</p>
+                </div>
+            </div>
+
+            <% if (activityList.length > 0) { %>
+
+                <div class="monitoring-table-wrapper">
+
+                    <table class="monitoring-table">
+
+                        <thead>
+                            <tr>
+                                <th>Nama Lansia</th>
+                                <th>Aktivitas</th>
+                                <th>Status</th>
+                                <th>Waktu</th>
+                                <th>Durasi di Luar</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            <% activityList.forEach(activity => { %>
+
+                                <tr>
+
+                                    <td>
+                                        <strong>
+                                            <%= activity.nama_lansia %>
+                                        </strong>
+                                    </td>
+
+                                    <td>
+                                        <%= activity.jenis_aktivitas %>
+                                    </td>
+
+                                    <td>
+
+                                        <% if (activity.status === 'At Home') { %>
+
+                                            <span class="status-badge status-home">
+                                                At Home
+                                            </span>
+
+                                        <% } else if (activity.status === 'Outside') { %>
+
+                                            <span class="status-badge status-outside">
+                                                Outside
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <span class="status-badge status-inactive">
+                                                No Movement
+                                            </span>
+
+                                        <% } %>
+
+                                    </td>
+
+                                    <td>
+                                        <%= activity.waktu %>
+                                    </td>
+
+                                    <td>
+                                        <%= activity.durasi_di_luar || '-' %>
+                                    </td>
+
+                                </tr>
+
+                            <% }) %>
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            <% } else { %>
+
+                <div class="empty-state">
+                    <h3>Belum Ada Aktivitas</h3>
+
+                    <p>
+                        Data monitoring akan ditampilkan setelah
+                        aktivitas lansia tersedia.
+                    </p>
+                </div>
+
+            <% } %>
+
+        </section>
+
+    </main>
+
+</div>
+
+<script src="/js/caregiver.js"></script>
+
+</body>
+</html>
