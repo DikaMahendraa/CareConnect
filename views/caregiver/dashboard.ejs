@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Caregiver | CareConnect</title>
+
+    <link rel="stylesheet" href="/css/caregiver.css">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand">
+                <h2>Care<span>Connect</span></h2>
+                <p>Caregiver Portal</p>
+            </div>
+
+            <nav class="sidebar-menu">
+                <a href="/caregiver/dashboard" class="active">Dashboard</a>
+                <a href="/caregiver/residents">Daftar Lansia</a>
+                <a href="/caregiver/monitoring">Monitoring Aktivitas</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <p>Caregiver Account</p>
+                <a href="/logout">Logout</a>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1>Dashboard</h1>
+                    <p>Selamat datang kembali di CareConnect.</p>
+                </div>
+
+                <div class="profile">
+                    <div class="avatar">C</div>
+                    <span>Caregiver</span>
+                </div>
+            </header>
+
+            <!-- WELCOME -->
+            <section class="welcome-section">
+                <h2>Selamat Datang, Caregiver!</h2>
+                <p>Pantau aktivitas dan kondisi lansia yang Anda dampingi.</p>
+            </section>
+
+            <!-- STATISTICS -->
+            <section class="stats-grid">
+
+                <div class="stat-card">
+                    <p>Total Lansia</p>
+                    <h2>0</h2>
+                    <span>Lansia yang didampingi</span>
+                </div>
+
+                <div class="stat-card">
+                    <p>At Home</p>
+                    <h2>0</h2>
+                    <span>Berada di rumah</span>
+                </div>
+
+                <div class="stat-card">
+                    <p>Outside</p>
+                    <h2>0</h2>
+                    <span>Berada di luar rumah</span>
+                </div>
+
+                <div class="stat-card alert-card">
+                    <p>Active Alerts</p>
+                    <h2>0</h2>
+                    <span>Peringatan aktif</span>
+                </div>
+
+            </section>
+
+            <!-- RECENT ACTIVITY -->
+            <section class="content-section">
+
+                <div class="section-header">
+                    <div>
+                        <h2>Aktivitas Terbaru</h2>
+                        <p>Ringkasan aktivitas lansia.</p>
+                    </div>
+
+                    <a href="/caregiver/monitoring">Lihat semua</a>
+                </div>
+
+                <div class="empty-state">
+                    <h3>Belum Ada Aktivitas</h3>
+                    <p>Aktivitas lansia akan ditampilkan di sini.</p>
+                </div>
+
+            </section>
+
+        </main>
+    </div>
+
+    <script src="/js/caregiver.js"></script>
+</body>
+</html>
