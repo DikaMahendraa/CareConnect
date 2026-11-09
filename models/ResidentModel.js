@@ -55,6 +55,7 @@ async function findById(id) {
 }
 
 // Menambahkan data lansia
+
 async function create(data) {
     const {
         fullName,
@@ -65,6 +66,12 @@ async function create(data) {
         familyContactName,
         familyContactPhone
     } = data;
+
+    const jenisKelamin = gender === 'L'
+        ? 'Laki-laki'
+        : gender === 'P'
+            ? 'Perempuan'
+            : null;
 
     const [result] = await db.execute(`
         INSERT INTO residents (
@@ -80,7 +87,7 @@ async function create(data) {
     `, [
         fullName,
         birthDate,
-        gender,
+        jenisKelamin,
         address,
         phone || null,
         familyContactName || null,
@@ -91,6 +98,7 @@ async function create(data) {
 }
 
 // Memperbarui data lansia
+
 async function update(id, data) {
     const {
         fullName,
@@ -101,6 +109,12 @@ async function update(id, data) {
         familyContactName,
         familyContactPhone
     } = data;
+
+    const jenisKelamin = gender === 'L'
+        ? 'Laki-laki'
+        : gender === 'P'
+            ? 'Perempuan'
+            : null;
 
     const [result] = await db.execute(`
         UPDATE residents
@@ -116,7 +130,7 @@ async function update(id, data) {
     `, [
         fullName,
         birthDate,
-        gender,
+        jenisKelamin,
         address,
         phone || null,
         familyContactName || null,
@@ -126,6 +140,7 @@ async function update(id, data) {
 
     return result.affectedRows;
 }
+
 
 // Menghapus data lansia
 async function remove(id) {
