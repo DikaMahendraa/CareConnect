@@ -30,10 +30,11 @@ CareConnect menyediakan alur kerja terpusat antara administrator dan caregiver. 
 
 | No. | Nama Anggota | NIM | Tanggung Jawab |
 |---|---|---|---|
-| 1 | Akan dilengkapi | Akan dilengkapi | Backend, database, dan integrasi sistem |
-| 2 | Akan dilengkapi | Akan dilengkapi | Antarmuka administrator |
-| 3 | Akan dilengkapi | Akan dilengkapi | Dashboard caregiver dan pemantauan lansia |
-| 4 | Akan dilengkapi | Akan dilengkapi | Alur alert, simulasi, pengujian, dan dokumentasi |
+| 1 |I Gede Dika Mahendra Putra| 42530027 | Backend, database, dan integrasi sistem |
+| 2 |I Gede Mahesa Adinata | 42530041 | Antarmuka administrator |
+| 3 |I Gusti Agung Agatha Nanda | 42530044 | Dashboard caregiver dan pemantauan lansia |
+| 4 |I Gede Swastika | 42530046 | Alur alert, simulasi, |
+| 5 |all| Testing |
 
 *Lengkapi tabel ini dengan nama, NIM, dan pembagian tugas resmi seluruh anggota kelompok.*
 
