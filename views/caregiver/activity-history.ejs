@@ -1,0 +1,235 @@
+<%
+  const rows = Array.isArray(activities) ? activities : [];
+  const residentList = Array.isArray(residents) ? residents : [];
+  const activeFilters = typeof filters !== "undefined" && filters ? filters : {};
+
+  const fmt = value => {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    if (Number.isNaN(date.getTime())) return "—";
+
+    return date.toLocaleString("id-ID", {
+      dateStyle: "medium",
+      timeStyle: "short"
+    });
+  };
+
+  const stateClass = value => String(value || "recorded")
+    .toLowerCase()
+    .replace(/\s+/g, "-");
+%>
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Riwayat Aktivitas | CareConnect</title>
+
+  <link rel="stylesheet" href="/css/alerts.css">
+</head>
+
+<body>
+  <main class="cc-page">
+
+    <!-- Header halaman -->
+    <header class="cc-page-header">
+      <div>
+        <p class="cc-eyebrow">CAREGIVER WORKSPACE</p>
+
+        <h1>Riwayat Aktivitas</h1>
+
+        <p class="cc-muted">
+          Lihat catatan aktivitas lansia berdasarkan penghuni dan tanggal.
+        </p>
+      </div>
+
+      <a class="cc-button cc-button--quiet" href="/caregiver/dashboard">
+        Kembali ke Dashboard
+      </a>
+    </header>
+
+    <!-- Filter riwayat -->
+    <section class="cc-panel">
+
+      <div class="cc-panel-heading">
+        <div>
+          <h2>Filter riwayat</h2>
+
+          <p class="cc-muted">
+            Atur filter untuk mempersempit data yang ditampilkan.
+          </p>
+        </div>
+      </div>
+
+      <form
+        class="cc-history-filters"
+        method="GET"
+        action="/caregiver/activity-history"
+      >
+
+        <div>
+          <label for="resident-filter">Nama lansia</label>
+
+          <select id="resident-filter" name="residentId">
+
+            <option value="">Semua lansia</option>
+
+            <% residentList.forEach(resident => { %>
+
+              <option
+                value="<%= resident.id %>"
+                <%= activeFilters.residentId != null &&
+                    String(activeFilters.residentId) === String(resident.id)
+                    ? "selected"
+                    : "" %>
+              >
+                <%= resident.name %>
+              </option>
+
+            <% }) %>
+
+          </select>
+        </div>
+
+        <div>
+          <label for="date-from">Dari tanggal</label>
+
+          <input
+            id="date-from"
+            type="date"
+            name="from"
+            value="<%= activeFilters.from || '' %>"
+          >
+        </div>
+
+        <div>
+          <label for="date-to">Sampai tanggal</label>
+
+          <input
+            id="date-to"
+            type="date"
+            name="to"
+            value="<%= activeFilters.to || '' %>"
+          >
+        </div>
+
+        <div class="cc-filter-actions">
+
+          <button
+            class="cc-button cc-button--primary"
+            type="submit"
+          >
+            Terapkan
+          </button>
+
+          <a
+            class="cc-button cc-button--secondary"
+            href="/caregiver/activity-history"
+          >
+            Reset
+          </a>
+
+        </div>
+
+      </form>
+    </section>
+
+    <!-- Daftar aktivitas -->
+    <section class="cc-panel">
+
+      <div class="cc-panel-heading">
+        <div>
+          <h2>Catatan aktivitas</h2>
+
+          <p class="cc-muted">
+            <%= rows.length %> catatan pada hasil saat ini
+          </p>
+        </div>
+      </div>
+
+      <% if (!rows.length) { %>
+
+        <!-- Tampilan ketika data kosong -->
+        <div class="cc-empty-state">
+
+          <span class="cc-empty-icon" aria-hidden="true">
+            ⌕
+          </span>
+
+          <h3>Aktivitas tidak ditemukan</h3>
+
+          <p>
+            Belum ada catatan aktivitas yang sesuai dengan filter.
+            Coba ubah nama lansia atau rentang tanggal.
+          </p>
+
+        </div>
+
+      <% } else { %>
+
+        <!-- Tabel aktivitas -->
+        <div class="cc-table-wrap">
+
+          <table class="cc-table">
+
+            <thead>
+              <tr>
+                <th>Tanggal &amp; waktu</th>
+                <th>Lansia</th>
+                <th>Jenis aktivitas</th>
+                <th>Detail</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <% rows.forEach(item => { %>
+
+                <tr>
+
+                  <td>
+                    <strong>
+                      <%= fmt(item.occurred_at) %>
+                    </strong>
+                  </td>
+
+                  <td>
+                    <%= item.resident_name || "—" %>
+                  </td>
+
+                  <td>
+                    <%= item.activity_type_label || item.activity_type || "—" %>
+                  </td>
+
+                  <td>
+                    <%= item.description || "—" %>
+                  </td>
+
+                  <td>
+                    <span class="cc-pill cc-status cc-status--<%= stateClass(item.status) %>">
+                      <%= item.status || "Recorded" %>
+                    </span>
+                  </td>
+
+                </tr>
+
+              <% }) %>
+
+            </tbody>
+
+          </table>
+
+        </div>
+
+      <% } %>
+
+    </section>
+
+  </main>
+</body>
+</html>

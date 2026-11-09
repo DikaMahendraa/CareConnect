@@ -1,0 +1,28 @@
+<%
+  const rawCount =
+    typeof unhandledCount === "number"
+      ? unhandledCount
+      : 0;
+
+  const count = Number.isFinite(rawCount)
+    ? Math.max(0, rawCount)
+    : 0;
+%>
+
+<a
+  class="cc-alert-nav"
+  href="/caregiver/alerts"
+  aria-label="<%= count %> alert belum ditangani"
+>
+  <span class="cc-alert-nav__icon" aria-hidden="true">!</span>
+
+  <span>Alert Center</span>
+
+  <span
+    class="cc-alert-nav__count"
+    id="unhandled-alert-count"
+    <%= count === 0 ? "hidden" : "" %>
+  >
+    <%= count %>
+  </span>
+</a>

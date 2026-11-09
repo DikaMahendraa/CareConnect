@@ -1,0 +1,290 @@
+<%
+  const alertRows =
+    typeof alerts !== "undefined" && Array.isArray(alerts)
+      ? alerts
+      : [];
+
+  const currentFilters =
+    typeof filters !== "undefined" && filters
+      ? filters
+      : {};
+
+  const pendingCount =
+    typeof unhandledCount === "number"
+      ? unhandledCount
+      : alertRows.filter(a =>
+          !["Acknowledged", "Resolved"].includes(a.status)
+        ).length;
+
+  const priorityClass = value =>
+    String(value || "medium").toLowerCase();
+
+  const statusClass = value =>
+    String(value || "new").toLowerCase().replace(/\s+/g, "-");
+
+  const fmt = value => {
+    if (!value) return "—";
+
+    const date = new Date(value);
+
+    return isNaN(date.getTime())
+      ? "—"
+      : date.toLocaleString("id-ID", {
+          dateStyle: "medium",
+          timeStyle: "short"
+        });
+  };
+%>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Alert Center | CareConnect</title>
+
+  <link rel="stylesheet" href="/css/alerts.css">
+</head>
+
+<body>
+  <main class="cc-page">
+
+    <header class="cc-page-header">
+      <div>
+        <p class="cc-eyebrow">CAREGIVER WORKSPACE</p>
+        <h1>Alert Center</h1>
+        <p class="cc-muted">
+          Pantau peringatan dan tindak lanjuti kondisi
+          yang membutuhkan perhatian.
+        </p>
+      </div>
+
+      <a
+        class="cc-button cc-button--quiet"
+        href="/caregiver/dashboard"
+      >
+        Kembali ke Dashboard
+      </a>
+    </header>
+
+    <section
+      class="cc-summary-grid"
+      aria-label="Ringkasan peringatan"
+    >
+
+      <article class="cc-summary-card">
+        <span class="cc-summary-label">Belum ditangani</span>
+
+        <strong
+          class="cc-summary-number"
+          id="unhandled-alert-count"
+        >
+          <%= pendingCount %>
+        </strong>
+
+        <span class="cc-summary-hint">
+          Perlu ditinjau caregiver
+        </span>
+      </article>
+
+      <article class="cc-summary-card">
+        <span class="cc-summary-label">Total peringatan</span>
+
+        <strong class="cc-summary-number">
+          <%= typeof totalAlerts === "number"
+            ? totalAlerts
+            : alertRows.length %>
+        </strong>
+
+        <span class="cc-summary-hint">
+          Data yang ditampilkan
+        </span>
+      </article>
+
+      <article class="cc-summary-card cc-summary-card--accent">
+        <span class="cc-summary-label">Prioritas tinggi</span>
+
+        <strong class="cc-summary-number">
+          <%= typeof highPriorityCount === "number"
+            ? highPriorityCount
+            : alertRows.filter(a =>
+                ["high", "critical"].includes(
+                  priorityClass(a.priority)
+                )
+              ).length %>
+        </strong>
+
+        <span class="cc-summary-hint">
+          Perlu perhatian segera
+        </span>
+      </article>
+
+    </section>
+
+    <section class="cc-panel">
+
+      <div class="cc-panel-heading">
+        <div>
+          <h2>Daftar Peringatan</h2>
+
+          <p class="cc-muted">
+            Pilih salah satu alert untuk melihat detail
+            dan tindak lanjut.
+          </p>
+        </div>
+
+        <form
+          class="cc-filter-inline"
+          method="GET"
+          action="/caregiver/alerts"
+        >
+          <label class="cc-sr-only" for="alert-status">
+            Filter status
+          </label>
+
+          <select id="alert-status" name="status">
+            <option value="">Semua status</option>
+
+            <% ["New", "Acknowledged", "Resolved"].forEach(s => { %>
+              <option
+                value="<%= s %>"
+                <%= currentFilters.status === s ? "selected" : "" %>
+              >
+                <%= s %>
+              </option>
+            <% }) %>
+          </select>
+
+          <button
+            class="cc-button cc-button--secondary"
+            type="submit"
+          >
+            Filter
+          </button>
+        </form>
+      </div>
+
+      <% if (!alertRows.length) { %>
+
+        <div class="cc-empty-state">
+          <span class="cc-empty-icon" aria-hidden="true">
+            ✓
+          </span>
+
+          <h3>Belum ada peringatan</h3>
+
+          <p>
+            Alert yang tersedia akan muncul di halaman ini.
+          </p>
+        </div>
+
+      <% } else { %>
+
+        <div class="cc-table-wrap">
+          <table class="cc-table">
+
+            <thead>
+              <tr>
+                <th>Lansia</th>
+                <th>Jenis peringatan</th>
+                <th>Waktu kejadian</th>
+                <th>Prioritas</th>
+                <th>Status</th>
+                <th>
+                  <span class="cc-sr-only">Aksi</span>
+                </th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <% alertRows.forEach(alert => { %>
+
+                <tr class="<%= statusClass(alert.status) === 'new' ? 'cc-row--new' : '' %>">
+
+                  <td>
+                    <div class="cc-person-cell">
+
+                      <span class="cc-avatar">
+                        <%= (alert.resident_name || "L")
+                          .slice(0, 1)
+                          .toUpperCase() %>
+                      </span>
+
+                      <span>
+                        <strong>
+                          <%= alert.resident_name || "Nama tidak tersedia" %>
+                        </strong>
+
+                        <% if (statusClass(alert.status) === "new") { %>
+                          <span class="cc-new-indicator">
+                            BARU
+                          </span>
+                        <% } %>
+                      </span>
+
+                    </div>
+                  </td>
+
+                  <td>
+                    <strong>
+                      <%= alert.alert_type_label ||
+                        alert.alert_type ||
+                        "Peringatan" %>
+                    </strong>
+
+                    <% if (alert.description) { %>
+                      <small class="cc-cell-subtext">
+                        <%= alert.description %>
+                      </small>
+                    <% } %>
+                  </td>
+
+                  <td>
+                    <%= fmt(alert.occurred_at) %>
+                  </td>
+
+                  <td>
+                    <span class="cc-pill cc-priority cc-priority--<%= priorityClass(alert.priority) %>">
+                      <%= alert.priority || "Medium" %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <span class="cc-pill cc-status cc-status--<%= statusClass(alert.status) %>">
+                      <%= alert.status || "New" %>
+                    </span>
+                  </td>
+
+                  <td>
+                    <a
+                      class="cc-text-link"
+                      href="/caregiver/alerts/<%= encodeURIComponent(alert.id) %>"
+                    >
+                      Detail →
+                    </a>
+                  </td>
+
+                </tr>
+
+              <% }) %>
+
+            </tbody>
+          </table>
+        </div>
+
+      <% } %>
+
+    </section>
+
+    <p class="cc-footnote">
+      Informasi pada halaman ini mengikuti data alert
+      yang disediakan backend CareConnect.
+    </p>
+
+  </main>
+
+  <script src="/js/alerts.js" defer></script>
+
+</body>
+</html>
