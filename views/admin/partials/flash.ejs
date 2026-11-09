@@ -1,0 +1,7 @@
+<% if (typeof flash !== 'undefined' && flash && flash.message) { %>
+<div class="cc-notice cc-notice--<%= flash.type === 'error' ? 'error' : 'success' %> adm-flash" role="status" data-flash>
+  <%- include('icon', { name: flash.type === 'error' ? 'alert' : 'check' }) %>
+  <span><%= flash.message %></span>
+  <button type="button" class="cc-notice__close" data-flash-close aria-label="Tutup pesan"><%- include('icon', { name: 'x' }) %></button>
+</div>
+<% } %>

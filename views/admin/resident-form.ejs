@@ -1,0 +1,69 @@
+<%
+  const isEdit = mode === 'edit';
+%>
+<%- include('partials/head', { pageTitle: isEdit ? 'Edit data lansia' : 'Tambah lansia', activeMenu: 'residents' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const r = resident || {};
+  const err = (typeof errors !== 'undefined' && errors) ? errors : {};
+  const dateVal = r.birthDate ? new Date(r.birthDate).toISOString().slice(0, 10) : '';
+  const action = isEdit ? base + '/residents/' + r.id + '/update' : base + '/residents';
+  const field = (n) => err[n] ? ' is-invalid' : '';
+%>
+<a class="adm-back" href="<%= base %>/residents"><%- include('partials/icon', { name: 'arrow-left' }) %> Kembali ke data lansia</a>
+<div class="adm-pagehead">
+  <div><h1><%= isEdit ? 'Edit data lansia' : 'Tambah lansia' %></h1><p><%= isEdit ? 'Perbarui informasi ' + (r.fullName || 'lansia') + '.' : 'Isi data lansia yang akan dipantau.' %></p></div>
+</div>
+<div class="adm-form-wrap">
+<form class="cc-card" method="post" action="<%= action %>" novalidate data-validate>
+  <%- include('partials/csrf') %>
+  <div class="cc-card__body">
+    <div class="cc-form-grid">
+      <div class="cc-field cc-field--full">
+        <label class="cc-label" for="fullName">Nama lengkap <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('fullName') %>" id="fullName" name="fullName" value="<%= r.fullName || '' %>" required autocomplete="off">
+        <% if (err.fullName) { %><span class="cc-error"><%= err.fullName %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label" for="birthDate">Tanggal lahir <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('birthDate') %>" id="birthDate" name="birthDate" type="date" value="<%= dateVal %>" required>
+        <% if (err.birthDate) { %><span class="cc-error"><%= err.birthDate %></span><% } else { %><span class="cc-help">Usia dihitung otomatis dari tanggal lahir.</span><% } %>
+      </div>
+      <div class="cc-field">
+        <span class="cc-label" id="genderLbl">Jenis kelamin <span class="cc-req">*</span></span>
+        <div class="cc-choice" role="radiogroup" aria-labelledby="genderLbl">
+          <label><input type="radio" name="gender" value="L" <%= r.gender === 'L' ? 'checked' : '' %> required> Laki-laki</label>
+          <label><input type="radio" name="gender" value="P" <%= r.gender === 'P' ? 'checked' : '' %>> Perempuan</label>
+        </div>
+        <% if (err.gender) { %><span class="cc-error"><%= err.gender %></span><% } %>
+      </div>
+      <div class="cc-field cc-field--full">
+        <label class="cc-label" for="address">Alamat <span class="cc-req">*</span></label>
+        <textarea class="cc-textarea<%= field('address') %>" id="address" name="address" rows="3" required><%= r.address || '' %></textarea>
+        <% if (err.address) { %><span class="cc-error"><%= err.address %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label" for="phone">Nomor telepon lansia</label>
+        <input class="cc-input<%= field('phone') %>" id="phone" name="phone" type="tel" inputmode="tel" pattern="[0-9+\-\s]{8,16}" value="<%= r.phone || '' %>" placeholder="08xxxxxxxxxx">
+        <% if (err.phone) { %><span class="cc-error"><%= err.phone %></span><% } else { %><span class="cc-help">Boleh dikosongkan.</span><% } %>
+      </div>
+      <div class="cc-field"></div>
+      <div class="cc-field">
+        <label class="cc-label" for="familyContactName">Nama kontak keluarga <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('familyContactName') %>" id="familyContactName" name="familyContactName" value="<%= r.familyContactName || '' %>" required>
+        <% if (err.familyContactName) { %><span class="cc-error"><%= err.familyContactName %></span><% } %>
+      </div>
+      <div class="cc-field">
+        <label class="cc-label" for="familyContactPhone">Nomor telepon keluarga <span class="cc-req">*</span></label>
+        <input class="cc-input<%= field('familyContactPhone') %>" id="familyContactPhone" name="familyContactPhone" type="tel" inputmode="tel" pattern="[0-9+\-\s]{8,16}" value="<%= r.familyContactPhone || '' %>" placeholder="08xxxxxxxxxx" required>
+        <% if (err.familyContactPhone) { %><span class="cc-error"><%= err.familyContactPhone %></span><% } %>
+      </div>
+    </div>
+  </div>
+  <div class="cc-form-actions">
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/residents">Batal</a>
+    <button type="submit" class="cc-btn cc-btn--primary"><%- include('partials/icon', { name: 'check' }) %> <%= isEdit ? 'Simpan perubahan' : 'Simpan lansia' %></button>
+  </div>
+</form>
+</div>
+<%- include('partials/foot') %>
