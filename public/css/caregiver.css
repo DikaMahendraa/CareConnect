@@ -1,7 +1,7 @@
 
-/* =================================
-   1. GLOBAL STYLE
-================================= */
+/* =========================================
+   1. GLOBAL
+========================================= */
 
 * {
     margin: 0;
@@ -9,10 +9,26 @@
     box-sizing: border-box;
 }
 
+:root {
+    --primary: #193b60;
+    --primary-dark: #142b46;
+    --primary-light: #244666;
+    --accent: #43c6b5;
+    --background: #f4f7fb;
+    --surface: #ffffff;
+    --text: #243247;
+    --muted: #8290a2;
+    --border: #e5ebf2;
+    --success: #18845c;
+    --warning: #b7791f;
+    --danger: #c24141;
+}
+
 body {
     font-family: Arial, Helvetica, sans-serif;
-    background: #f4f7fb;
-    color: #243247;
+    background: var(--background);
+    color: var(--text);
+    line-height: 1.5;
 }
 
 a {
@@ -20,20 +36,26 @@ a {
     color: inherit;
 }
 
+button {
+    font-family: inherit;
+    cursor: pointer;
+}
+
 .app-container {
     display: flex;
     min-height: 100vh;
 }
 
-/* =================================
+/* =========================================
    2. SIDEBAR
-================================= */
+========================================= */
 
 .sidebar {
     width: 260px;
-    background: #142b46;
+    min-height: 100vh;
+    background: var(--primary-dark);
     color: white;
-    padding: 30px 24px;
+    padding: 30px 22px;
     display: flex;
     flex-direction: column;
     flex-shrink: 0;
@@ -49,7 +71,7 @@ a {
 }
 
 .brand span {
-    color: #43c6b5;
+    color: var(--accent);
 }
 
 .brand p {
@@ -61,25 +83,28 @@ a {
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
 }
 
 .sidebar-menu a {
-    padding: 14px 15px;
+    display: block;
+    padding: 13px 15px;
     border-radius: 9px;
     color: #c5d1df;
     font-size: 14px;
-    transition: 0.2s;
+    border-left: 4px solid transparent;
+    transition: 0.2s ease;
 }
 
-.sidebar-menu a:hover,
-.sidebar-menu a.active {
-    background: #244666;
+.sidebar-menu a:hover {
+    background: #1d3b59;
     color: white;
 }
 
 .sidebar-menu a.active {
-    border-left: 4px solid #43c6b5;
+    background: var(--primary-light);
+    color: white;
+    border-left-color: var(--accent);
 }
 
 .sidebar-footer {
@@ -94,14 +119,27 @@ a {
     margin-bottom: 12px;
 }
 
-.sidebar-footer a {
+.sidebar-footer a,
+.sidebar-footer button {
+    display: block;
+    width: 100%;
+    text-align: left;
     color: white;
+    background: transparent;
+    border: none;
     font-size: 14px;
+    padding: 9px 0;
+    transition: 0.2s;
 }
 
-/* =================================
-   3. MAIN CONTENT
-================================= */
+.sidebar-footer a:hover,
+.sidebar-footer button:hover {
+    color: var(--accent);
+}
+
+/* =========================================
+   3. MAIN CONTENT & TOPBAR
+========================================= */
 
 .main-content {
     flex: 1;
@@ -113,16 +151,18 @@ a {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 20px;
     margin-bottom: 35px;
 }
 
 .topbar h1 {
     font-size: 27px;
     color: #172e49;
+    letter-spacing: -0.5px;
 }
 
 .topbar p {
-    color: #8290a2;
+    color: var(--muted);
     font-size: 14px;
     margin-top: 7px;
 }
@@ -133,6 +173,7 @@ a {
     gap: 12px;
     font-weight: 600;
     font-size: 14px;
+    flex-shrink: 0;
 }
 
 .avatar {
@@ -147,9 +188,9 @@ a {
     font-weight: bold;
 }
 
-/* =================================
+/* =========================================
    4. WELCOME SECTION
-================================= */
+========================================= */
 
 .welcome-section {
     background: linear-gradient(120deg, #193b60, #276b83);
@@ -157,6 +198,7 @@ a {
     border-radius: 15px;
     color: white;
     margin-bottom: 30px;
+    box-shadow: 0 8px 20px rgba(25, 59, 96, 0.12);
 }
 
 .welcome-section h2 {
@@ -169,23 +211,29 @@ a {
     font-size: 14px;
 }
 
-/* =================================
+/* =========================================
    5. STATISTICS
-================================= */
+========================================= */
 
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 20px;
-    margin-bottom: 35px;
+    margin-bottom: 30px;
 }
 
 .stat-card {
-    background: white;
+    background: var(--surface);
     padding: 24px;
     border-radius: 13px;
-    border: 1px solid #e9edf3;
+    border: 1px solid var(--border);
     box-shadow: 0 3px 12px rgba(20, 43, 70, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(20, 43, 70, 0.08);
 }
 
 .stat-card p {
@@ -195,7 +243,7 @@ a {
 
 .stat-card h2 {
     font-size: 30px;
-    color: #193b60;
+    color: var(--primary);
     margin: 15px 0 8px;
 }
 
@@ -208,27 +256,30 @@ a {
     color: #e07854;
 }
 
-/* =================================
-   6. RECENT ACTIVITY
-================================= */
+/* =========================================
+   6. CONTENT SECTION
+========================================= */
 
 .content-section {
-    background: white;
+    background: var(--surface);
     padding: 25px;
     border-radius: 13px;
-    border: 1px solid #e9edf3;
+    border: 1px solid var(--border);
+    box-shadow: 0 3px 12px rgba(20, 43, 70, 0.03);
+    margin-bottom: 25px;
 }
 
 .section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    gap: 15px;
     margin-bottom: 25px;
 }
 
 .section-header h2 {
     font-size: 19px;
-    color: #193b60;
+    color: var(--primary);
 }
 
 .section-header p {
@@ -241,6 +292,10 @@ a {
     color: #168f9a;
     font-size: 13px;
     font-weight: 600;
+}
+
+.section-header a:hover {
+    text-decoration: underline;
 }
 
 .empty-state {
@@ -262,62 +317,9 @@ a {
     font-size: 13px;
 }
 
-/* =================================
-   7. RESPONSIVE DESIGN
-================================= */
-
-@media (max-width: 1100px) {
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 768px) {
-    .app-container {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        padding: 20px;
-    }
-
-    .brand {
-        margin-bottom: 20px;
-    }
-
-    .main-content {
-        padding: 25px 18px;
-    }
-
-    .topbar {
-        align-items: flex-start;
-        gap: 15px;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .welcome-section {
-        padding: 22px;
-    }
-
-    .topbar h1 {
-        font-size: 22px;
-    }
-
-    .section-header {
-        align-items: flex-start;
-        gap: 15px;
-    }
-}
-
-/* =================================
-   RESIDENT CARDS
-================================= */
+/* =========================================
+   7. RESIDENT CARDS
+========================================= */
 
 .resident-grid {
     display: grid;
@@ -328,7 +330,7 @@ a {
 
 .resident-card {
     background: #ffffff;
-    border: 1px solid #e5ebf2;
+    border: 1px solid var(--border);
     border-radius: 13px;
     overflow: hidden;
     box-shadow: 0 3px 12px rgba(20, 43, 70, 0.04);
@@ -373,7 +375,7 @@ a {
 }
 
 .resident-info h3 {
-    color: #193b60;
+    color: var(--primary);
     font-size: 18px;
     margin-bottom: 8px;
 }
@@ -394,27 +396,28 @@ a {
     border-radius: 20px;
     font-size: 12px;
     font-weight: 600;
+    white-space: nowrap;
 }
 
 .status-home {
     background: #dff5eb;
-    color: #18845c;
+    color: var(--success);
 }
 
 .status-outside {
     background: #fff0d8;
-    color: #b7791f;
+    color: var(--warning);
 }
 
 .status-inactive {
     background: #fee7e7;
-    color: #c24141;
+    color: var(--danger);
 }
 
 .resident-detail-btn {
     display: block;
     text-align: center;
-    background: #193b60;
+    background: var(--primary);
     color: white;
     padding: 11px;
     border-radius: 8px;
@@ -427,23 +430,9 @@ a {
     background: #276b83;
 }
 
-/* RESPONSIVE RESIDENT GRID */
-
-@media (max-width: 1100px) {
-    .resident-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-}
-
-@media (max-width: 600px) {
-    .resident-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* =================================
-   RESIDENT DETAIL
-================================= */
+/* =========================================
+   8. RESIDENT DETAIL
+========================================= */
 
 .resident-profile-section {
     margin-bottom: 25px;
@@ -475,7 +464,7 @@ a {
 }
 
 .resident-profile-header h2 {
-    color: #193b60;
+    color: var(--primary);
     font-size: 24px;
     margin-bottom: 7px;
 }
@@ -507,7 +496,7 @@ a {
 }
 
 .resident-detail-grid strong {
-    color: #193b60;
+    color: var(--primary);
     font-size: 15px;
     overflow-wrap: anywhere;
 }
@@ -534,7 +523,7 @@ a {
 
 .detail-activity-item strong {
     display: block;
-    color: #193b60;
+    color: var(--primary);
     margin-bottom: 6px;
 }
 
@@ -543,27 +532,9 @@ a {
     font-size: 13px;
 }
 
-/* RESPONSIVE DETAIL */
-
-@media (max-width: 600px) {
-    .resident-detail-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .resident-profile-header {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-
-    .detail-activity-item {
-        align-items: flex-start;
-        flex-direction: column;
-    }
-}
-
-/* =================================
-   MONITORING INFORMATION
-================================= */
+/* =========================================
+   9. MONITORING INFORMATION
+========================================= */
 
 .monitoring-info-grid {
     display: grid;
@@ -574,7 +545,7 @@ a {
 
 .monitoring-info-card {
     background: #ffffff;
-    border: 1px solid #e5ebf2;
+    border: 1px solid var(--border);
     border-radius: 13px;
     padding: 24px;
     box-shadow: 0 3px 12px rgba(20, 43, 70, 0.04);
@@ -587,7 +558,7 @@ a {
 }
 
 .monitoring-info-card h3 {
-    color: #193b60;
+    color: var(--primary);
     font-size: 21px;
     margin-bottom: 9px;
     overflow-wrap: anywhere;
@@ -598,9 +569,9 @@ a {
     font-size: 12px;
 }
 
-/* =================================
-   MONITORING TABLE
-================================= */
+/* =========================================
+   10. MONITORING TABLE
+========================================= */
 
 .monitoring-table-wrapper {
     width: 100%;
@@ -634,24 +605,121 @@ a {
     font-size: 13px;
 }
 
+.monitoring-table tbody tr {
+    transition: background 0.2s;
+}
+
 .monitoring-table tbody tr:hover {
     background: #f8fafc;
 }
 
 .monitoring-table td strong {
-    color: #193b60;
+    color: var(--primary);
 }
 
-/* =================================
-   MONITORING RESPONSIVE
-================================= */
+/* =========================================
+   11. RESPONSIVE DESIGN
+========================================= */
+
+@media (max-width: 1100px) {
+    .resident-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .main-content {
+        padding: 30px;
+    }
+}
 
 @media (max-width: 768px) {
+    .app-container {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+    }
+
+    .brand {
+        margin-bottom: 20px;
+    }
+
+    .sidebar-menu {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .sidebar-footer {
+        margin-top: 20px;
+    }
+
+    .main-content {
+        padding: 25px 18px;
+    }
+
+    .topbar {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     .monitoring-info-grid {
         grid-template-columns: 1fr;
     }
+}
 
-    .monitoring-info-card {
-        padding: 20px;
+@media (max-width: 600px) {
+    .resident-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .resident-detail-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .resident-profile-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .detail-activity-item {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .topbar h1 {
+        font-size: 22px;
+    }
+
+    .profile {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .welcome-section {
+        padding: 22px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .sidebar-menu {
+        grid-template-columns: 1fr;
+    }
+
+    .content-section {
+        padding: 18px;
     }
 }

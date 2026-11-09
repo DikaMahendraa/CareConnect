@@ -1,4 +1,3 @@
-
 const ResidentModel = require('../models/ResidentModel');
 
 // Data admin untuk halaman

@@ -1,3 +1,4 @@
+
 <%- include('partials/head', { pageTitle: 'Dashboard', activeMenu: 'dashboard' }) %>
 <%
   const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
@@ -16,6 +17,7 @@
     <a class="cc-btn cc-btn--primary" href="<%= base %>/residents/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah lansia</a>
     <a class="cc-btn cc-btn--outline" href="<%= base %>/caregivers/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah caregiver</a>
     <a class="cc-btn cc-btn--outline" href="<%= base %>/assignments"><%- include('partials/icon', { name: 'link' }) %> Atur penugasan</a>
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/simulation"><%- include('partials/icon', { name: 'activity' }) %> Simulation</a>
   </div>
 </div>
 

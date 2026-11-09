@@ -1,4 +1,3 @@
-
 const DashboardModel = require('../models/DashboardModel');
 
 async function dashboard(req, res) {

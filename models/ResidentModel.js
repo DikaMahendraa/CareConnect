@@ -1,4 +1,3 @@
-
 const db = require('../config/database');
 
 // Mengambil semua data lansia

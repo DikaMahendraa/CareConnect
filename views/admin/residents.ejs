@@ -1,3 +1,4 @@
+
 <%- include('partials/head', { pageTitle: 'Data lansia', activeMenu: 'residents' }) %>
 <%
   const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
@@ -6,7 +7,10 @@
 %>
 <div class="adm-pagehead">
   <div><h1>Data lansia</h1><p><%= residents.length %> lansia terdaftar</p></div>
-  <div class="adm-pagehead__actions"><a class="cc-btn cc-btn--primary" href="<%= base %>/residents/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah lansia</a></div>
+  <div class="adm-pagehead__actions">
+    <a class="cc-btn cc-btn--primary" href="<%= base %>/residents/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah lansia</a>
+    <a class="cc-btn cc-btn--outline" href="<%= base %>/simulation"><%- include('partials/icon', { name: 'activity' }) %> Simulation</a>
+  </div>
 </div>
 
 <section class="cc-card">

@@ -1,107 +1,365 @@
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Caregiver | CareConnect</title>
-
-    <link rel="stylesheet" href="/css/caregiver.css">
+    <title>Dashboard | CareConnect</title>
+    <link rel="stylesheet" href="/css/dashboard.css">
 </head>
 <body>
 
-    <div class="app-container">
+<%
+    const name = typeof caregiverName !== "undefined" && caregiverName
+        ? caregiverName
+        : "Caregiver";
 
-        <!-- SIDEBAR -->
-        <aside class="sidebar">
-            <div class="brand">
-                <h2>Care<span>Connect</span></h2>
-                <p>Caregiver Portal</p>
+    const activities = Array.isArray(recentActivities)
+        ? recentActivities
+        : [];
+
+    const residents = typeof totalResidents === "number" ? totalResidents : 0;
+    const atHome = typeof atHomeCount === "number" ? atHomeCount : 0;
+    const outside = typeof outsideCount === "number" ? outsideCount : 0;
+    const alerts = typeof activeAlerts === "number" ? activeAlerts : 0;
+
+    function formatDate(value) {
+        if (!value) return "-";
+
+        return new Date(value).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+%>
+
+<div class="cc-layout">
+
+    <!-- SIDEBAR -->
+    <aside class="cc-sidebar">
+
+        <div class="cc-brand">
+            <div class="cc-brand-icon">C</div>
+            <div>
+                <h2>CareConnect</h2>
+                <span>Caregiver Portal</span>
+            </div>
+        </div>
+
+        <div class="cc-sidebar-label">WORKSPACE</div>
+
+        <nav class="cc-navigation">
+
+            <a href="/caregiver/dashboard" class="cc-nav-link active">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/caregiver/residents" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="9" cy="8" r="3"/>
+                        <path d="M3 20v-1a6 6 0 0 1 12 0v1"/>
+                        <path d="M16 5a3 3 0 0 1 0 6"/>
+                        <path d="M18 14a5 5 0 0 1 3 5v1"/>
+                    </svg>
+                </span>
+                <span>Daftar Lansia</span>
+            </a>
+
+            <a href="/caregiver/monitoring" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 12h4l3-8 4 16 3-8h4"/>
+                    </svg>
+                </span>
+                <span>Monitoring</span>
+            </a>
+
+            <a href="/caregiver/alerts" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                        <path d="M10 21h4"/>
+                    </svg>
+                </span>
+                <span>Alert Center</span>
+            </a>
+
+        </nav>
+
+        <div class="cc-sidebar-bottom">
+            <form action="/logout" method="POST">
+                <button type="submit" class="cc-logout">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5"/>
+                        <path d="M15 12H3"/>
+                        <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
+                    </svg>
+                    <span>Log out</span>
+                </button>
+            </form>
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="cc-main">
+
+        <!-- TOPBAR -->
+        <header class="cc-topbar">
+
+            <div class="cc-breadcrumb">
+                Caregiver <span>/</span> <strong>Dashboard</strong>
             </div>
 
-            <nav class="sidebar-menu">
-                <a href="/caregiver/dashboard" class="active">Dashboard</a>
-                <a href="/caregiver/residents">Daftar Lansia</a>
-                <a href="/caregiver/monitoring">Monitoring Aktivitas</a>
-            </nav>
+            <div class="cc-topbar-right">
 
-            <div class="sidebar-footer">
-                <p>Caregiver Account</p>
-                <a href="/logout">Logout</a>
+                <div class="cc-workspace-status">
+                    <span class="cc-status-dot"></span>
+                    Caregiver Workspace
+                </div>
+
+                <div class="cc-topbar-profile">
+                    <div class="cc-topbar-avatar">
+                        <%= name.charAt(0).toUpperCase() %>
+                    </div>
+
+                    <div class="cc-topbar-profile-info">
+                        <strong><%= name %></strong>
+                        <span>Caregiver</span>
+                    </div>
+                </div>
+
             </div>
-        </aside>
 
-        <!-- MAIN CONTENT -->
-        <main class="main-content">
+        </header>
 
-            <header class="topbar">
+        <!-- CONTENT -->
+        <section class="cc-content">
+
+            <!-- PAGE HEADING -->
+            <div class="cc-page-heading">
                 <div>
+                    <span class="cc-eyebrow">CAREGIVER OVERVIEW</span>
                     <h1>Dashboard</h1>
-                    <p>Selamat datang kembali di CareConnect.</p>
+                    <p>Ringkasan aktivitas dan kondisi lansia yang Anda dampingi.</p>
                 </div>
 
-                <div class="profile">
-                    <div class="avatar">C</div>
-                    <span>Caregiver</span>
+                <div class="cc-heading-label">
+                    <span>CARECONNECT</span>
+                    <strong>Monitoring System</strong>
                 </div>
-            </header>
+            </div>
 
-            <!-- WELCOME -->
-            <section class="welcome-section">
-                <h2>Selamat Datang, Caregiver!</h2>
-                <p>Pantau aktivitas dan kondisi lansia yang Anda dampingi.</p>
+            <!-- WELCOME BANNER -->
+            <section class="cc-welcome-banner">
+
+                <div class="cc-welcome-content">
+                    <span class="cc-welcome-label">YOUR CAREGIVER WORKSPACE</span>
+
+                    <h2>Selamat datang kembali,<br><%= name %>!</h2>
+
+                    <p>
+                        Pantau kondisi lansia, periksa aktivitas terbaru,
+                        dan pastikan mereka mendapatkan pendampingan terbaik.
+                    </p>
+
+                    <a href="/caregiver/monitoring" class="cc-primary-button">
+                        Lihat Monitoring
+                        <span>→</span>
+                    </a>
+                </div>
+
+                <div class="cc-welcome-decoration">
+                    <div class="cc-decoration-circle circle-one"></div>
+                    <div class="cc-decoration-circle circle-two"></div>
+                    <div class="cc-decoration-center">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/>
+                        </svg>
+                    </div>
+                    <span>Care with attention</span>
+                </div>
+
             </section>
 
             <!-- STATISTICS -->
-            <section class="stats-grid">
+            <div class="cc-section-heading">
+                <div>
+                    <span class="cc-eyebrow">AT A GLANCE</span>
+                    <h2>Overview Statistics</h2>
+                </div>
+            </div>
 
-                <div class="stat-card">
-                    <p>Total Lansia</p>
-                    <h2>0</h2>
-                    <span>Lansia yang didampingi</span>
+            <section class="cc-stats-grid">
+
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>Total Lansia</span>
+                        <div class="cc-stat-icon blue">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="9" cy="8" r="3"/>
+                                <path d="M3 20v-1a6 6 0 0 1 12 0v1"/>
+                                <path d="M16 5a3 3 0 0 1 0 6"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3><%= residents %></h3>
+                    <p>Lansia yang Anda dampingi</p>
                 </div>
 
-                <div class="stat-card">
-                    <p>At Home</p>
-                    <h2>0</h2>
-                    <span>Berada di rumah</span>
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>At Home</span>
+                        <div class="cc-stat-icon green">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M3 10.5L12 3l9 7.5"/>
+                                <path d="M5 9v12h14V9"/>
+                                <path d="M9 21v-7h6v7"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3><%= atHome %></h3>
+                    <p>Berada di rumah</p>
                 </div>
 
-                <div class="stat-card">
-                    <p>Outside</p>
-                    <h2>0</h2>
-                    <span>Berada di luar rumah</span>
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>Outside</span>
+                        <div class="cc-stat-icon orange">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M7 17L17 7"/>
+                                <path d="M7 7h10v10"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3><%= outside %></h3>
+                    <p>Berada di luar rumah</p>
                 </div>
 
-                <div class="stat-card alert-card">
-                    <p>Active Alerts</p>
-                    <h2>0</h2>
-                    <span>Peringatan aktif</span>
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>Active Alerts</span>
+                        <div class="cc-stat-icon red">
+                            <svg viewBox="0 0 24 24">
+                                <path d="M12 3L2.5 20h19L12 3z"/>
+                                <path d="M12 9v5"/>
+                                <path d="M12 17h.01"/>
+                            </svg>
+                        </div>
+                    </div>
+                    <h3><%= alerts %></h3>
+                    <p>Peringatan yang perlu diperiksa</p>
                 </div>
 
             </section>
 
-            <!-- RECENT ACTIVITY -->
-            <section class="content-section">
+            <!-- RECENT ACTIVITIES -->
+            <section class="cc-panel">
 
-                <div class="section-header">
+                <div class="cc-panel-header">
                     <div>
+                        <span class="cc-eyebrow">ACTIVITY OVERVIEW</span>
                         <h2>Aktivitas Terbaru</h2>
-                        <p>Ringkasan aktivitas lansia.</p>
+                        <p>Perkembangan aktivitas lansia yang Anda dampingi.</p>
                     </div>
 
-                    <a href="/caregiver/monitoring">Lihat semua</a>
+                    <a href="/caregiver/monitoring" class="cc-view-all">
+                        Lihat semua <span>→</span>
+                    </a>
                 </div>
 
-                <div class="empty-state">
-                    <h3>Belum Ada Aktivitas</h3>
-                    <p>Aktivitas lansia akan ditampilkan di sini.</p>
-                </div>
+                <% if (activities.length > 0) { %>
+
+                    <div class="cc-activity-list">
+
+                        <% activities.forEach(activity => { %>
+
+                            <div class="cc-activity-item">
+
+                                <div class="cc-activity-icon">
+                                    <svg viewBox="0 0 24 24">
+                                        <path d="M12 8v4l3 2"/>
+                                        <circle cx="12" cy="12" r="9"/>
+                                    </svg>
+                                </div>
+
+                                <div class="cc-activity-info">
+                                    <strong>
+                                        <%= activity.resident_name || "Lansia" %>
+                                    </strong>
+
+                                    <p>
+                                        <%= activity.event_type || "-" %>
+                                    </p>
+
+                                    <span>
+                                        <%= activity.description || "Tidak ada keterangan tambahan." %>
+                                    </span>
+                                </div>
+
+                                <div class="cc-activity-time">
+                                    <span><%= formatDate(activity.occurred_at) %></span>
+                                </div>
+
+                            </div>
+
+                        <% }) %>
+
+                    </div>
+
+                <% } else { %>
+
+                    <div class="cc-empty-state">
+                        <div class="cc-empty-icon">
+                            <svg viewBox="0 0 24 24">
+                                <circle cx="12" cy="12" r="9"/>
+                                <path d="M12 8v4l3 2"/>
+                            </svg>
+                        </div>
+
+                        <h3>Belum Ada Aktivitas</h3>
+                        <p>
+                            Aktivitas lansia akan muncul di sini
+                            ketika terdapat data monitoring.
+                        </p>
+                    </div>
+
+                <% } %>
 
             </section>
 
-        </main>
-    </div>
+            <!-- SIMULATION NOTICE -->
+            <div class="cc-notice">
+                <div class="cc-notice-icon">i</div>
+                <p>
+                    Informasi monitoring pada CareConnect merupakan data simulasi
+                    untuk keperluan demonstrasi sistem, bukan hasil pembacaan sensor
+                    secara langsung.
+                </p>
+            </div>
 
-    <script src="/js/caregiver.js"></script>
+            <footer class="cc-footer">
+                <span>CareConnect</span>
+                <span>Caregiver Monitoring Platform</span>
+            </footer>
+
+        </section>
+
+    </main>
+
+</div>
+
 </body>
 </html>

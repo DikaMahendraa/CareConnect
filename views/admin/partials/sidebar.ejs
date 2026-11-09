@@ -5,12 +5,13 @@
   const __unassigned = (typeof stats !== 'undefined' && stats) ? stats.unassignedResidents
     : (typeof unassignedCount !== 'undefined' ? unassignedCount
     : (typeof unassignedResidents !== 'undefined' ? unassignedResidents.length : 0));
-  const __items = [
-    { key: 'dashboard',   label: 'Dashboard',      icon: 'dashboard', href: __base + '/dashboard' },
-    { key: 'residents',   label: 'Data lansia',     icon: 'elder',     href: __base + '/residents' },
-    { key: 'caregivers',  label: 'Data caregiver',  icon: 'heart',     href: __base + '/caregivers' },
-    { key: 'assignments', label: 'Penugasan',       icon: 'link',      href: __base + '/assignments' }
-  ];
+ const __items = [
+  { key: 'dashboard',   label: 'Dashboard',      icon: 'dashboard', href: __base + '/dashboard' },
+  { key: 'residents',   label: 'Data lansia',     icon: 'elder',     href: __base + '/residents' },
+  { key: 'caregivers',  label: 'Data caregiver',  icon: 'heart',     href: __base + '/caregivers' },
+  { key: 'assignments', label: 'Penugasan',       icon: 'link',      href: __base + '/assignments' },
+  { key: 'simulation',  label: 'Simulation',      icon: 'activity',  href: __base + '/simulation' }
+];
 %>
 <aside class="adm-sidebar" id="admSidebar" aria-label="Menu utama">
   <a class="adm-brand" href="<%= __base %>/dashboard">

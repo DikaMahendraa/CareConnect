@@ -1,213 +1,342 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Monitoring Aktivitas | CareConnect</title>
-    <link rel="stylesheet" href="/css/caregiver.css">
+    <title>Monitoring | CareConnect</title>
+    <link rel="stylesheet" href="/css/monitoring.css">
 </head>
 <body>
 
-<div class="app-container">
+<%
+    const name = typeof caregiverName !== "undefined" && caregiverName
+        ? caregiverName
+        : "Caregiver";
+
+    const data = typeof monitoringData !== "undefined" && monitoringData
+        ? monitoringData
+        : {};
+
+    const stats = data.stats ||
+        data.monitoringStats ||
+        (typeof monitoringStats !== "undefined" ? monitoringStats : {});
+
+    const activityList = data.activities ||
+        data.recentActivities ||
+        (typeof activities !== "undefined" && Array.isArray(activities)
+            ? activities
+            : []);
+
+    function getStatusClass(status) {
+        if (status === "At Home") return "home";
+        if (status === "Outside") return "outside";
+        return "inactive";
+    }
+
+    function getStatusLabel(status) {
+        if (status === "At Home") return "At Home";
+        if (status === "Outside") return "Outside";
+        return "No Movement";
+    }
+
+    function formatDate(date) {
+        if (!date) return "-";
+
+        return new Date(date).toLocaleString("id-ID", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+    }
+%>
+
+<div class="cc-layout">
 
     <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="brand">
-            <h2>Care<span>Connect</span></h2>
-            <p>Caregiver Portal</p>
+    <aside class="cc-sidebar">
+
+        <div class="cc-brand">
+            <div class="cc-brand-icon">C</div>
+            <div>
+                <h2>CareConnect</h2>
+                <span>Caregiver Portal</span>
+            </div>
         </div>
 
-        <nav class="sidebar-menu">
-            <a href="/caregiver/dashboard">Dashboard</a>
-            <a href="/caregiver/residents">Daftar Lansia</a>
-            <a href="/caregiver/monitoring" class="active">Monitoring Aktivitas</a>
+        <div class="cc-sidebar-label">WORKSPACE</div>
+
+        <nav class="cc-navigation">
+
+            <a href="/caregiver/dashboard" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <rect x="3" y="3" width="7" height="7" rx="1"/>
+                        <rect x="14" y="3" width="7" height="7" rx="1"/>
+                        <rect x="3" y="14" width="7" height="7" rx="1"/>
+                        <rect x="14" y="14" width="7" height="7" rx="1"/>
+                    </svg>
+                </span>
+                <span>Dashboard</span>
+            </a>
+
+            <a href="/caregiver/residents" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <circle cx="9" cy="8" r="3"/>
+                        <path d="M3 20v-1a6 6 0 0 1 12 0v1"/>
+                        <path d="M16 5a3 3 0 0 1 0 6"/>
+                        <path d="M18 14a5 5 0 0 1 3 5v1"/>
+                    </svg>
+                </span>
+                <span>Daftar Lansia</span>
+            </a>
+
+            <a href="/caregiver/monitoring" class="cc-nav-link active">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M3 12h4l3-8 4 16 3-8h4"/>
+                    </svg>
+                </span>
+                <span>Monitoring</span>
+            </a>
+
+            <a href="/caregiver/alerts" class="cc-nav-link">
+                <span class="cc-nav-icon">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                        <path d="M10 21h4"/>
+                    </svg>
+                </span>
+                <span>Alert Center</span>
+            </a>
+
         </nav>
 
-        <div class="sidebar-footer">
-            <p>Caregiver Account</p>
-            <a href="/logout">Logout</a>
+        <div class="cc-sidebar-bottom">
+            <form action="/logout" method="POST">
+                <button type="submit" class="cc-logout">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M10 17l5-5-5-5"/>
+                        <path d="M15 12H3"/>
+                        <path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/>
+                    </svg>
+                    <span>Log out</span>
+                </button>
+            </form>
         </div>
+
     </aside>
 
     <!-- MAIN CONTENT -->
-    <main class="main-content">
+    <main class="cc-main">
 
-        <!-- HEADER -->
-        <header class="topbar">
-            <div>
-                <h1>Monitoring Aktivitas</h1>
-                <p>Pantau pergerakan dan aktivitas lansia secara berkala.</p>
+        <!-- TOPBAR -->
+        <header class="cc-topbar">
+
+            <div class="cc-breadcrumb">
+                Caregiver <span>/</span> <strong>Monitoring</strong>
             </div>
 
-            <div class="profile">
-                <div class="avatar">C</div>
-                <span>Caregiver</span>
+            <div class="cc-topbar-right">
+
+                <div class="cc-workspace-status">
+                    <span class="cc-status-dot"></span>
+                    Caregiver Workspace
+                </div>
+
+                <div class="cc-topbar-profile">
+                    <div class="cc-topbar-avatar">
+                        <%= name.charAt(0).toUpperCase() %>
+                    </div>
+
+                    <div class="cc-topbar-profile-info">
+                        <strong><%= name %></strong>
+                        <span>Caregiver</span>
+                    </div>
+                </div>
+
             </div>
+
         </header>
 
-        <%
-            const stats = typeof monitoringStats !== 'undefined'
-                ? monitoringStats
-                : {};
+        <!-- PAGE CONTENT -->
+        <section class="cc-content">
 
-            const activityList = typeof activities !== 'undefined'
-                ? activities
-                : [];
-        %>
-
-        <!-- MONITORING SUMMARY -->
-        <section class="stats-grid">
-
-            <div class="stat-card">
-                <p>At Home</p>
-                <h2><%= stats.atHome || 0 %></h2>
-                <span>Lansia berada di rumah</span>
-            </div>
-
-            <div class="stat-card">
-                <p>Outside</p>
-                <h2><%= stats.outside || 0 %></h2>
-                <span>Lansia berada di luar</span>
-            </div>
-
-            <div class="stat-card alert-card">
-                <p>No Movement</p>
-                <h2><%= stats.noMovement || 0 %></h2>
-                <span>Belum terdeteksi pergerakan</span>
-            </div>
-
-        </section>
-
-        <!-- ADDITIONAL INFORMATION -->
-        <section class="monitoring-info-grid">
-
-            <div class="monitoring-info-card">
-                <p>Aktivitas Terakhir</p>
-
-                <h3>
-                    <%= stats.lastActivity || 'Belum tersedia' %>
-                </h3>
-
-                <span>Waktu aktivitas terbaru</span>
-            </div>
-
-            <div class="monitoring-info-card">
-                <p>Durasi di Luar Rumah</p>
-
-                <h3>
-                    <%= stats.outsideDuration || 'Belum tersedia' %>
-                </h3>
-
-                <span>Durasi lansia berada di luar</span>
-            </div>
-
-        </section>
-
-        <!-- ACTIVITY HISTORY -->
-        <section class="content-section">
-
-            <div class="section-header">
+            <!-- PAGE HEADING -->
+            <div class="cc-page-heading">
                 <div>
-                    <h2>Riwayat Aktivitas</h2>
-                    <p>Catatan aktivitas lansia berdasarkan waktu.</p>
-                </div>
-            </div>
-
-            <% if (activityList.length > 0) { %>
-
-                <div class="monitoring-table-wrapper">
-
-                    <table class="monitoring-table">
-
-                        <thead>
-                            <tr>
-                                <th>Nama Lansia</th>
-                                <th>Aktivitas</th>
-                                <th>Status</th>
-                                <th>Waktu</th>
-                                <th>Durasi di Luar</th>
-                            </tr>
-                        </thead>
-
-                        <tbody>
-
-                            <% activityList.forEach(activity => { %>
-
-                                <tr>
-
-                                    <td>
-                                        <strong>
-                                            <%= activity.nama_lansia %>
-                                        </strong>
-                                    </td>
-
-                                    <td>
-                                        <%= activity.jenis_aktivitas %>
-                                    </td>
-
-                                    <td>
-
-                                        <% if (activity.status === 'At Home') { %>
-
-                                            <span class="status-badge status-home">
-                                                At Home
-                                            </span>
-
-                                        <% } else if (activity.status === 'Outside') { %>
-
-                                            <span class="status-badge status-outside">
-                                                Outside
-                                            </span>
-
-                                        <% } else { %>
-
-                                            <span class="status-badge status-inactive">
-                                                No Movement
-                                            </span>
-
-                                        <% } %>
-
-                                    </td>
-
-                                    <td>
-                                        <%= activity.waktu %>
-                                    </td>
-
-                                    <td>
-                                        <%= activity.durasi_di_luar || '-' %>
-                                    </td>
-
-                                </tr>
-
-                            <% }) %>
-
-                        </tbody>
-
-                    </table>
-
-                </div>
-
-            <% } else { %>
-
-                <div class="empty-state">
-                    <h3>Belum Ada Aktivitas</h3>
-
+                    <span class="cc-eyebrow">ACTIVITY MONITORING</span>
+                    <h1>Monitoring Aktivitas</h1>
                     <p>
-                        Data monitoring akan ditampilkan setelah
-                        aktivitas lansia tersedia.
+                        Pantau catatan aktivitas dan perubahan status
+                        lansia yang berada dalam pengawasan Anda.
                     </p>
                 </div>
 
-            <% } %>
+                <div class="cc-heading-label">
+                    <span>CARECONNECT</span>
+                    <strong>Activity Monitoring</strong>
+                </div>
+            </div>
+
+            <!-- MONITORING SUMMARY -->
+            <section class="cc-stats-grid">
+
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>At Home</span>
+                        <div class="cc-stat-icon home-icon">⌂</div>
+                    </div>
+                    <h2><%= stats.atHome || 0 %></h2>
+                    <p>Lansia berada di rumah</p>
+                </div>
+
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>Outside</span>
+                        <div class="cc-stat-icon outside-icon">↗</div>
+                    </div>
+                    <h2><%= stats.outside || 0 %></h2>
+                    <p>Lansia berada di luar rumah</p>
+                </div>
+
+                <div class="cc-stat-card">
+                    <div class="cc-stat-top">
+                        <span>No Movement</span>
+                        <div class="cc-stat-icon inactive-icon">◷</div>
+                    </div>
+                    <h2><%= stats.noMovement || 0 %></h2>
+                    <p>Belum terdapat pergerakan</p>
+                </div>
+
+            </section>
+
+            <!-- ADDITIONAL INFORMATION -->
+            <section class="cc-information-grid">
+
+                <div class="cc-information-card">
+                    <div class="cc-information-icon">◷</div>
+                    <div>
+                        <span>Aktivitas Terakhir</span>
+                        <h3><%= stats.lastActivity || "Belum tersedia" %></h3>
+                        <p>Aktivitas yang tercatat paling baru</p>
+                    </div>
+                </div>
+
+                <div class="cc-information-card">
+                    <div class="cc-information-icon outside-info-icon">↗</div>
+                    <div>
+                        <span>Durasi di Luar Rumah</span>
+                        <h3><%= stats.outsideDuration || "Belum tersedia" %></h3>
+                        <p>Informasi durasi berada di luar rumah</p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ACTIVITY HISTORY -->
+            <section class="cc-panel">
+
+                <div class="cc-panel-header">
+                    <div>
+                        <h2>Riwayat Aktivitas</h2>
+                        <p>Catatan aktivitas lansia berdasarkan waktu.</p>
+                    </div>
+
+                    <span class="cc-total-label">
+                        <%= activityList.length %> Records
+                    </span>
+                </div>
+
+                <% if (activityList.length > 0) { %>
+
+                    <div class="cc-table-wrapper">
+                        <table class="cc-monitoring-table">
+
+                            <thead>
+                                <tr>
+                                    <th>Nama Lansia</th>
+                                    <th>Aktivitas</th>
+                                    <th>Status</th>
+                                    <th>Waktu</th>
+                                    <th>Durasi di Luar</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% activityList.forEach(activity => { %>
+                                    <tr>
+
+                                        <td>
+                                            <div class="cc-resident-cell">
+                                                <div class="cc-resident-avatar">
+                                                    <%= activity.nama_lansia
+                                                        ? activity.nama_lansia.charAt(0).toUpperCase()
+                                                        : "L" %>
+                                                </div>
+                                                <strong><%= activity.nama_lansia || "Tidak diketahui" %></strong>
+                                            </div>
+                                        </td>
+
+                                        <td>
+                                            <%= activity.jenis_aktivitas || "-" %>
+                                        </td>
+
+                                        <td>
+                                            <span class="cc-status-badge <%= getStatusClass(activity.status) %>">
+                                                <span class="cc-badge-dot"></span>
+                                                <%= getStatusLabel(activity.status) %>
+                                            </span>
+                                        </td>
+
+                                        <td><%= formatDate(activity.waktu) %></td>
+
+                                        <td><%= activity.durasi_di_luar || "-" %></td>
+
+                                    </tr>
+                                <% }) %>
+                            </tbody>
+
+                        </table>
+                    </div>
+
+                <% } else { %>
+
+                    <div class="cc-empty-state">
+                        <div class="cc-empty-icon">◷</div>
+                        <h3>Belum Ada Aktivitas</h3>
+                        <p>
+                            Data monitoring akan ditampilkan setelah
+                            aktivitas lansia tersedia.
+                        </p>
+                    </div>
+
+                <% } %>
+
+            </section>
+
+            <!-- INFORMATION -->
+            <div class="cc-notice">
+                <div class="cc-notice-icon">i</div>
+                <p>
+                    Data monitoring pada CareConnect berasal dari
+                    catatan aktivitas dan simulasi sistem, bukan
+                    pemantauan sensor secara langsung.
+                </p>
+            </div>
+
+            <footer class="cc-footer">
+                <span>CareConnect</span>
+                <span>Caregiver Monitoring Platform</span>
+            </footer>
 
         </section>
 
     </main>
 
 </div>
-
-<script src="/js/caregiver.js"></script>
 
 </body>
 </html>

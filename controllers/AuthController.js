@@ -1,4 +1,3 @@
-
 const UserModel = require('../models/UserModel');
 const bcrypt = require('bcrypt');
 

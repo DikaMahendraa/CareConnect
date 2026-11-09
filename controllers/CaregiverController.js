@@ -1,4 +1,3 @@
-
 const CaregiverModel = require('../models/CaregiverModel');
 const bcrypt = require('bcrypt');
 

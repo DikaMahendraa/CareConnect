@@ -10,6 +10,7 @@ const db = require('./config/database');
 const authRoutes = require('./routes/authRoutes');
 const adminRoutes = require('./routes/adminRoutes');
 const residentRoutes = require('./routes/residentRoutes');
+const caregiverRoutes = require('./routes/caregiverRoutes');
 
 // Middleware
 app.use(express.urlencoded({ extended: true }));
@@ -35,10 +36,10 @@ app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // Routes
-// Routes
 app.use('/', authRoutes);
 app.use('/admin', adminRoutes);
 app.use('/admin/residents', residentRoutes);
+app.use('/caregiver', caregiverRoutes);
 
 // Halaman utama
 app.get('/', (req, res) => {

@@ -1,4 +1,3 @@
-
 const AssignmentModel = require('../models/AssignmentModel');
 const CaregiverModel = require('../models/CaregiverModel');
 

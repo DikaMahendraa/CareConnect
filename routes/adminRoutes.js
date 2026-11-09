@@ -1,10 +1,10 @@
-
 const express = require('express');
 const router = express.Router();
 
 const AdminController = require('../controllers/AdminController');
 const CaregiverController = require('../controllers/CaregiverController');
 const AssignmentController = require('../controllers/AssignmentController');
+const SimulationController = require('../controllers/SimulationController');
 
 const { requireRole } = require('../middleware/authMiddleware');
 
@@ -95,6 +95,24 @@ router.post(
     '/assignments/:id/delete',
     requireRole('admin'),
     AssignmentController.destroy
+);
+
+// ======================================
+// SIMULATION
+// ======================================
+
+// Menampilkan halaman Simulation
+router.get(
+    '/simulation',
+    requireRole('admin'),
+    SimulationController.index
+);
+
+// Memproses simulasi aktivitas lansia
+router.post(
+    '/simulation',
+    requireRole('admin'),
+    SimulationController.store
 );
 
 
