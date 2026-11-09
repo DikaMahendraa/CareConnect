@@ -1,9 +1,9 @@
 # CareConnect
-### Elderly Care Coordination & Monitoring System
+### Sistem Koordinasi dan Pemantauan Perawatan Lansia
 
 <p align="center">
-  A web-based platform for elderly resident management, caregiver coordination,
-  and simulated activity monitoring.
+  Platform berbasis web untuk mengelola data lansia, mengoordinasikan caregiver,
+  dan melakukan simulasi pemantauan aktivitas.
 </p>
 
 <p align="center">
@@ -11,323 +11,344 @@
   <img src="https://img.shields.io/badge/Express.js-Web%20Framework-000000?logo=express&logoColor=white" alt="Express.js">
   <img src="https://img.shields.io/badge/EJS-Template%20Engine-B4CA65" alt="EJS">
   <img src="https://img.shields.io/badge/MySQL-Database-4479A1?logo=mysql&logoColor=white" alt="MySQL">
-  <img src="https://img.shields.io/badge/Architecture-MVC-blue" alt="MVC">
+  <img src="https://img.shields.io/badge/Arsitektur-MVC-blue" alt="MVC">
 </p>
 
 ---
 
-## About the Project
+## 1. Tentang CareConnect
 
-**CareConnect** is a web-based elderly care coordination system developed to help administrators organize resident information, manage caregiver accounts, and assign caregivers to elderly residents. Caregivers can use the platform to view their assigned residents, monitor recorded activity events, and follow up on alerts.
+**CareConnect** adalah aplikasi web yang dikembangkan untuk membantu pengelolaan dan koordinasi perawatan lansia. Aplikasi ini memungkinkan administrator mengelola data lansia, akun caregiver, serta penugasan caregiver kepada lansia. Caregiver dapat melihat lansia yang menjadi tanggung jawabnya, memantau catatan aktivitas, dan menindaklanjuti alert yang muncul.
 
-The application provides a centralized workflow between administrators and caregivers. It is built with **Node.js, Express.js, EJS, and MySQL**, using the **Model-View-Controller (MVC)** architectural pattern.
+CareConnect menyediakan alur kerja terpusat antara administrator dan caregiver. Aplikasi ini dibangun menggunakan **Node.js, Express.js, EJS, dan MySQL** dengan menerapkan pola arsitektur **Model-View-Controller (MVC)**.
 
-> **Project scope:** Activity events and monitoring alerts in the current version are generated through an administrator-operated simulation feature. CareConnect does not currently connect to physical IoT devices, mmWave radar sensors, GPS hardware, or an automatic fall-detection system.
+> **Ruang lingkup proyek:** Aktivitas dan alert pemantauan pada versi saat ini dihasilkan melalui fitur simulasi yang dijalankan oleh administrator. CareConnect belum terhubung dengan perangkat IoT fisik, sensor radar mmWave, perangkat GPS, maupun sistem deteksi jatuh otomatis.
 
-## Team
+## 2. Identitas Kelompok
 
-**Group Name: CareConnect**
+**Nama Kelompok: CareConnect**
 
-| No. | Team Member | Student ID | Responsibility |
+| No. | Nama Anggota | NIM | Tanggung Jawab |
 |---|---|---|---|
-| 1 | To be added | To be added | Backend, database, and system integration |
-| 2 | To be added | To be added | Administrator interface |
-| 3 | To be added | To be added | Caregiver dashboard and resident monitoring |
-| 4 | To be added | To be added | Alert workflow, simulation, testing, and documentation |
+| 1 | Akan dilengkapi | Akan dilengkapi | Backend, database, dan integrasi sistem |
+| 2 | Akan dilengkapi | Akan dilengkapi | Antarmuka administrator |
+| 3 | Akan dilengkapi | Akan dilengkapi | Dashboard caregiver dan pemantauan lansia |
+| 4 | Akan dilengkapi | Akan dilengkapi | Alur alert, simulasi, pengujian, dan dokumentasi |
 
-*Update this table with the official names, student IDs, and final task distribution of the team.*
+*Lengkapi tabel ini dengan nama, NIM, dan pembagian tugas resmi seluruh anggota kelompok.*
 
-## Project Objectives
+## 3. Latar Belakang
 
-- Centralize elderly resident information.
-- Organize caregiver accounts and responsibilities.
-- Make resident-to-caregiver assignments easier to manage.
-- Provide caregivers with access to assigned resident information.
-- Record activity events and present relevant monitoring alerts.
-- Provide an alert follow-up workflow for caregivers.
-- Demonstrate the monitoring process through controlled simulation scenarios.
+Lansia, khususnya yang menjalani aktivitas sehari-hari secara mandiri, dapat mengalami kondisi yang membutuhkan perhatian, seperti tidak adanya pergerakan dalam waktu tertentu, kemungkinan terjatuh, atau aktivitas di luar rumah.
 
-## Features
+Tanpa sistem koordinasi yang terorganisasi, caregiver dapat mengalami kesulitan dalam memantau aktivitas lansia dan mengelola tindak lanjut ketika terjadi kondisi tertentu.
 
-### Administrator
+CareConnect dikembangkan sebagai solusi berbasis web untuk membantu proses tersebut melalui pengelolaan data yang terpusat, pembagian tugas caregiver, pencatatan aktivitas, dan pengelolaan alert.
 
-- **Dashboard** — overview of resident, caregiver, and assignment information.
-- **Resident Management** — create, view, update, and delete resident records.
-- **Caregiver Management** — manage caregiver accounts and their information.
-- **Caregiver Assignment** — assign caregivers to residents and manage assignments.
-- **Activity Simulation** — generate sample activity events and corresponding alerts for workflow testing.
+## 4. Tujuan Pengembangan
 
-### Caregiver
+1. Mempermudah pengelolaan data lansia secara terpusat.
+2. Mengelola akun caregiver dan informasi yang berkaitan.
+3. Mengatur penugasan caregiver kepada lansia.
+4. Menyediakan informasi lansia yang menjadi tanggung jawab caregiver.
+5. Mencatat aktivitas dan menampilkan alert berdasarkan aktivitas tertentu.
+6. Menyediakan fitur tindak lanjut alert oleh caregiver.
+7. Mendemonstrasikan alur pemantauan melalui skenario simulasi.
 
-- **Caregiver Dashboard** — summary of assigned residents and monitoring information.
-- **Assigned Residents** — view residents assigned to the logged-in caregiver.
-- **Resident Monitoring** — review recorded activity information.
-- **Alert Center** — view alerts related to assigned residents.
-- **Alert Follow-up** — acknowledge or resolve alerts and record follow-up actions.
-- **Activity History** — review previously recorded activity events.
+## 5. Fitur Aplikasi
 
-## Activity Simulation
+### 5.1 Fitur Administrator
 
-The simulation feature allows an administrator to create activity events to demonstrate the system workflow.
+| Fitur | Deskripsi |
+|---|---|
+| Dashboard | Menampilkan ringkasan informasi lansia, caregiver, dan penugasan. |
+| Manajemen Data Lansia | Menambah, melihat, mengubah, dan menghapus data lansia. |
+| Manajemen Caregiver | Mengelola akun dan informasi caregiver. |
+| Penugasan Caregiver | Menghubungkan caregiver dengan lansia yang menjadi tanggung jawabnya. |
+| Simulasi Aktivitas | Membuat simulasi aktivitas lansia dan alert untuk pengujian alur pemantauan. |
 
-| Event | Description | Alert |
+### 5.2 Fitur Caregiver
+
+| Fitur | Deskripsi |
+|---|---|
+| Dashboard Caregiver | Menampilkan ringkasan lansia yang ditugaskan dan informasi pemantauan. |
+| Daftar Lansia | Menampilkan data lansia yang menjadi tanggung jawab caregiver. |
+| Pemantauan Lansia | Melihat catatan aktivitas dan informasi pemantauan lansia. |
+| Pusat Alert | Menampilkan alert yang berkaitan dengan lansia yang ditugaskan. |
+| Detail Alert | Menampilkan informasi lebih lanjut mengenai alert. |
+| Tindak Lanjut Alert | Memungkinkan caregiver memberikan tindakan, catatan, dan memperbarui status alert. |
+| Riwayat Aktivitas | Menampilkan catatan aktivitas yang telah tersimpan. |
+
+## 6. Simulasi Aktivitas
+
+CareConnect menyediakan fitur simulasi untuk menggambarkan bagaimana alur pemantauan aktivitas dan pembuatan alert bekerja.
+
+Administrator dapat membuat beberapa jenis simulasi berikut:
+
+| Jenis Aktivitas | Keterangan | Membuat Alert |
 |---|---|---|
-| Normal Activity | Resident is recorded as performing normal activity. | No |
-| Outside | Resident is recorded as being outside the home. | No |
-| Returned | Resident is recorded as having returned home. | No |
-| No Movement | No movement is simulated for a resident. | Yes |
-| Possible Fall | A possible-fall event is simulated. | Yes |
-| Sensor Offline | A sensor-offline condition is simulated. | Yes |
+| Normal Activity | Lansia tercatat melakukan aktivitas normal. | Tidak |
+| Outside | Lansia tercatat sedang berada di luar rumah. | Tidak |
+| Returned | Lansia tercatat telah kembali ke rumah. | Tidak |
+| No Movement | Simulasi kondisi tidak adanya pergerakan lansia. | Ya |
+| Possible Fall | Simulasi kemungkinan lansia terjatuh. | Ya |
+| Sensor Offline | Simulasi kondisi sensor tidak aktif. | Ya |
 
-Simulation events are stored as activity records. For configured alert events, the system also creates an alert that can be viewed and followed up by the assigned caregiver.
+Setiap simulasi disimpan sebagai catatan aktivitas. Untuk jenis aktivitas tertentu, sistem juga membuat alert yang dapat dilihat dan ditindaklanjuti oleh caregiver yang ditugaskan.
 
-**Important:** These scenarios are software-generated test data. They must not be interpreted as real-time sensor readings or medical/ emergency detection.
+**Catatan:** Seluruh skenario tersebut merupakan data simulasi yang dibuat oleh aplikasi. Hasil simulasi bukan pembacaan sensor secara langsung dan bukan hasil diagnosis atau deteksi medis.
 
-## System Workflow
+## 7. Alur Kerja Sistem
 
-1. The administrator signs in to the application.
-2. The administrator registers resident and caregiver information.
-3. The administrator assigns a caregiver to a resident.
-4. The administrator generates a simulated activity event when testing the monitoring workflow.
-5. The system stores the activity event and creates an alert when the event type requires one.
-6. The assigned caregiver signs in and reviews the resident's activity and alerts.
-7. The caregiver records a follow-up action and updates the alert status.
+1. Administrator masuk ke aplikasi menggunakan akun yang tersedia.
+2. Administrator menambahkan data lansia dan akun caregiver.
+3. Administrator menghubungkan caregiver dengan lansia melalui fitur penugasan.
+4. Administrator membuat simulasi aktivitas untuk menguji alur pemantauan.
+5. Sistem menyimpan catatan aktivitas dan membuat alert apabila jenis aktivitas memerlukannya.
+6. Caregiver masuk ke aplikasi dan melihat lansia yang menjadi tanggung jawabnya.
+7. Caregiver memeriksa aktivitas serta alert yang muncul.
+8. Caregiver melakukan tindak lanjut dan memperbarui informasi penanganan alert.
 
-## Technology Stack
+## 8. Teknologi yang Digunakan
 
-| Technology | Purpose |
+| Teknologi | Kegunaan |
 |---|---|
-| Node.js | JavaScript runtime for the server |
-| Express.js | Web application framework and routing |
-| EJS | Server-side HTML templating |
-| MySQL | Relational database |
-| mysql2 | MySQL database driver |
-| express-session | Session-based authentication |
-| bcrypt | Password hashing and comparison |
-| dotenv | Environment variable configuration |
-| Nodemon | Development server auto-restart |
+| Node.js | Menjalankan JavaScript pada sisi server. |
+| Express.js | Mengelola server, routing, dan request aplikasi. |
+| EJS | Menampilkan halaman web menggunakan template engine. |
+| MySQL | Menyimpan dan mengelola data aplikasi. |
+| mysql2 | Menghubungkan aplikasi dengan database MySQL. |
+| express-session | Mengelola sesi pengguna. |
+| bcrypt | Melakukan hashing dan pemeriksaan password. |
+| dotenv | Mengelola konfigurasi melalui environment variable. |
+| Nodemon | Memulai ulang server secara otomatis saat pengembangan. |
+| HTML, CSS, JavaScript | Membangun tampilan dan interaksi pada sisi pengguna. |
 
-The frontend uses EJS-rendered pages, CSS, and browser-side JavaScript where required.
+## 9. Arsitektur Sistem
 
-## Architecture
+CareConnect menerapkan pola arsitektur **Model-View-Controller (MVC)** untuk memisahkan pengelolaan data, tampilan, dan alur logika aplikasi.
 
-CareConnect follows the **Model-View-Controller (MVC)** pattern.
-
-| Layer | Responsibility |
+| Komponen | Tanggung Jawab |
 |---|---|
-| Model | Handles database queries and data operations. |
-| View | Renders the user interface using EJS templates. |
-| Controller | Processes requests, coordinates models, and selects responses. |
-| Routes | Maps application URLs and HTTP methods to controllers. |
-| Middleware | Handles authentication, role authorization, and request processing. |
-| Config | Stores application and database configuration. |
+| Model | Menangani query database dan pengelolaan data. |
+| View | Menampilkan antarmuka aplikasi menggunakan template EJS. |
+| Controller | Memproses request, mengatur alur aplikasi, dan menentukan response. |
+| Routes | Menghubungkan URL dan metode HTTP dengan controller. |
+| Middleware | Menangani autentikasi, otorisasi role, dan proses request lainnya. |
+| Config | Menyimpan konfigurasi aplikasi dan koneksi database. |
 
-### Request Flow
+### Diagram Alur MVC
 
 ```text
-User / Browser
-      |
-      v
-Express Routes
-      |
-      v
-Middleware
-(Authentication / Authorization)
-      |
-      v
-Controller
-      |
-      v
-Model
-      |
-      v
-MySQL Database
+Pengguna / Browser
+        |
+        v
+   Express Routes
+        |
+        v
+    Middleware
+ (Autentikasi / Role)
+        |
+        v
+    Controller
+        |
+        v
+      Model
+        |
+        v
+   MySQL Database
 
-Controller
-      |
-      v
-EJS View
-      |
-      v
-HTML Response
+    Controller
+        |
+        v
+      EJS View
+        |
+        v
+   HTML Response
 ```
 
-## Database Overview
+## 10. Struktur Database
 
-The database is named **CareConnect** and contains the following core tables:
+Database utama aplikasi bernama **CareConnect**, dengan tabel-tabel inti berikut:
 
-| Table | Purpose |
+| Nama Tabel | Kegunaan |
 |---|---|
-| `users` | Stores administrator and caregiver account information. |
-| `residents` | Stores elderly resident profiles and contact information. |
-| `care_assignments` | Connects caregivers with their assigned residents. |
-| `activity_events` | Stores resident activity records, including simulated events. |
-| `alerts` | Stores alerts generated by selected activity events. |
-| `alert_actions` | Stores caregiver follow-up actions and notes. |
+| `users` | Menyimpan informasi akun administrator dan caregiver. |
+| `residents` | Menyimpan profil serta informasi kontak lansia. |
+| `care_assignments` | Menyimpan hubungan penugasan caregiver dengan lansia. |
+| `activity_events` | Menyimpan catatan aktivitas lansia, termasuk aktivitas simulasi. |
+| `alerts` | Menyimpan alert yang dihasilkan dari jenis aktivitas tertentu. |
+| `alert_actions` | Menyimpan tindakan dan catatan tindak lanjut caregiver terhadap alert. |
 
-### Main Relationships
+### Relasi Utama
 
-- A caregiver account can be connected to residents through `care_assignments`.
-- A resident can have multiple activity event records.
-- An activity event can be associated with an alert.
-- An alert can have follow-up action records in `alert_actions`.
+- Akun caregiver terhubung dengan lansia melalui tabel `care_assignments`.
+- Satu lansia dapat memiliki beberapa catatan aktivitas.
+- Catatan aktivitas tertentu dapat memiliki alert.
+- Satu alert dapat memiliki beberapa catatan tindak lanjut pada tabel `alert_actions`.
 
-## Project Structure
+## 11. Struktur Folder Proyek
 
-The application is organized into MVC-oriented directories. The exact files may evolve as development continues.
+Berikut gambaran struktur direktori aplikasi berdasarkan pola MVC. Struktur dapat berkembang mengikuti proses pengembangan.
 
 ```text
 CareConnect/
-├── config/              # Database and application configuration
-├── controllers/         # Request handling and application logic
-├── middleware/          # Authentication and authorization
-├── models/              # Database queries and data operations
-├── routes/              # Express route definitions
+├── config/              # Konfigurasi aplikasi dan database
+├── controllers/         # Pengolahan request dan logika aplikasi
+├── middleware/          # Autentikasi dan otorisasi
+├── models/              # Query database dan pengelolaan data
+├── routes/              # Definisi route Express
 ├── views/
-│   ├── admin/           # Administrator pages and partials
-│   └── caregiver/       # Caregiver pages and partials
+│   ├── admin/           # Halaman dan partial administrator
+│   └── caregiver/       # Halaman caregiver
 ├── public/
-│   ├── css/             # Stylesheets
-│   ├── js/              # Client-side JavaScript
-│   └── assets/          # Images and other static assets
-├── .env.example         # Example environment configuration
-├── app.js               # Express application entry point
-└── package.json         # Project metadata and dependencies
+│   ├── css/             # File stylesheet
+│   ├── js/              # JavaScript sisi browser
+│   └── assets/          # Gambar dan aset statis
+├── .env.example         # Contoh konfigurasi environment
+├── app.js               # File utama aplikasi Express
+└── package.json         # Informasi proyek dan dependensi
 ```
 
-## Getting Started
+## 12. Instalasi dan Menjalankan Aplikasi
 
-Follow these steps to run CareConnect on your local machine.
+Ikuti langkah-langkah berikut untuk menjalankan CareConnect pada komputer lokal.
 
-### Prerequisites
+### 12.1 Persiapan
 
-Install the following software:
+Pastikan perangkat telah memiliki:
 
-- [Node.js](https://nodejs.org/) (LTS version recommended)
-- [MySQL Community Server](https://dev.mysql.com/downloads/mysql/)
-- [Git](https://git-scm.com/)
-- A code editor such as [Visual Studio Code](https://code.visualstudio.com/)
+- [Node.js](https://nodejs.org/) (disarankan versi LTS).
+- [MySQL Community Server](https://dev.mysql.com/downloads/mysql/).
+- [Git](https://git-scm.com/).
+- [Visual Studio Code](https://code.visualstudio.com/) atau editor kode lainnya.
 
-### 1. Clone the Repository
+### 12.2 Clone Repository
+
+Buka terminal, kemudian jalankan:
 
 ```bash
 git clone https://github.com/DikaMahendraa/CareConnect.git
 cd CareConnect
 ```
 
-### 2. Install Dependencies
+### 12.3 Instal Dependensi
+
+Jalankan perintah:
 
 ```bash
 npm install
 ```
 
-### 3. Create the Database
+### 12.4 Membuat Database
 
-Open MySQL and create the database:
+Buka MySQL, kemudian buat database:
 
 ```sql
 CREATE DATABASE CareConnect;
 ```
 
-Import or execute the project's database schema and seed data if they are provided in the repository. The application requires the tables described in the Database Overview section.
+Selanjutnya, impor atau jalankan struktur database dan data awal proyek apabila tersedia di repository. Aplikasi membutuhkan tabel-tabel yang dijelaskan pada bagian Struktur Database.
 
-### 4. Configure Environment Variables
+### 12.5 Konfigurasi Environment
 
-Create a local `.env` file in the project root based on `.env.example`.
+Buat file `.env` pada direktori utama berdasarkan file `.env.example`.
 
-Example configuration:
+Contoh konfigurasi:
 
 ```env
 PORT=3000
 
 DB_HOST=localhost
 DB_USER=root
-DB_PASS=your_mysql_password
+DB_PASS=password_mysql_kamu
 DB_NAME=CareConnect
 DB_PORT=3306
 
-SESSION_SECRET=replace_with_a_long_random_secret
+SESSION_SECRET=ganti_dengan_secret_random_yang_kuat
 ```
 
-Replace the example values with the credentials and settings on your local machine. Do not commit the real `.env` file or publish database passwords and session secrets.
+Sesuaikan nilai konfigurasi dengan pengaturan MySQL pada komputer masing-masing. Jangan mengunggah file `.env` yang berisi password atau secret asli ke repository publik.
 
-### 5. Run the Application
+### 12.6 Menjalankan Server
 
-For development:
+Untuk menjalankan aplikasi dalam mode pengembangan:
 
 ```bash
 npm run dev
 ```
 
-If the development script is not available, check the scripts defined in `package.json`.
+Jika perintah tersebut tidak tersedia, periksa script yang terdaftar di dalam `package.json`.
 
-Open the application in your browser:
+Setelah server berjalan, buka browser dan akses:
 
 ```text
 http://localhost:3000
 ```
 
-## Authentication and Security
+## 13. Autentikasi dan Keamanan
 
-The application includes role-based access for administrator and caregiver accounts.
+Aplikasi menyediakan akses berdasarkan peran pengguna, yaitu administrator dan caregiver.
 
-- Passwords are handled using bcrypt password hashing.
-- User sessions are managed using session-based authentication.
-- Protected routes use authentication and role authorization middleware.
-- Database operations use the MySQL driver and parameterized queries where implemented.
-- Environment variables are used for sensitive configuration.
+Beberapa mekanisme keamanan yang digunakan atau perlu diperhatikan:
 
-For production deployment, additional security hardening is required, including HTTPS, secure cookie settings, CSRF protection verification, input validation, rate limiting, and production-ready session storage.
+- Password pengguna diproses menggunakan bcrypt.
+- Sesi pengguna dikelola menggunakan session-based authentication.
+- Route tertentu dilindungi middleware autentikasi dan otorisasi role.
+- Query database menggunakan driver MySQL dan parameter terikat pada bagian yang telah diterapkan.
+- Konfigurasi sensitif disimpan melalui environment variable.
 
-## Testing Guide
+Untuk penggunaan pada lingkungan produksi, diperlukan penguatan keamanan tambahan seperti HTTPS, pengaturan cookie yang aman, verifikasi perlindungan CSRF, validasi input, pembatasan percobaan request, dan penyimpanan session yang sesuai untuk produksi.
 
-The following scenarios can be used to test the main application workflow:
+## 14. Panduan Pengujian
 
-1. Sign in using an administrator account.
-2. Create a resident record.
-3. Create a caregiver account.
-4. Assign the caregiver to the resident.
-5. Open the Activity Simulation page.
-6. Generate a normal activity event and verify the activity record.
-7. Generate a possible-fall or no-movement event and verify that an alert is created.
-8. Sign in as the assigned caregiver.
-9. Open the alert center and review the generated alert.
-10. Perform a follow-up action and verify the updated alert information.
+Skenario berikut dapat digunakan untuk menguji alur utama aplikasi:
 
-Use test accounts and non-sensitive sample data during development.
+1. Masuk menggunakan akun administrator.
+2. Tambahkan data lansia.
+3. Buat akun caregiver.
+4. Tetapkan caregiver kepada lansia.
+5. Buka halaman simulasi aktivitas.
+6. Buat simulasi aktivitas normal dan periksa apakah catatan aktivitas tersimpan.
+7. Buat simulasi kemungkinan jatuh atau tidak ada pergerakan, kemudian periksa apakah alert berhasil dibuat.
+8. Masuk menggunakan akun caregiver yang telah ditugaskan.
+9. Buka pusat alert dan periksa alert yang dihasilkan.
+10. Lakukan tindak lanjut dan periksa perubahan informasi atau status alert.
 
-## Current Limitations
+Gunakan akun pengujian dan data contoh yang tidak memuat informasi pribadi sebenarnya selama proses pengembangan.
 
-- Activity events are generated through manual simulation.
-- The application does not currently receive data from physical sensors or IoT devices.
-- Fall-related alerts are simulated and are not validated medical detections.
-- Real-time notification delivery is not guaranteed.
-- Production deployment and integration with external monitoring hardware are outside the current implementation scope.
+## 15. Batasan Sistem Saat Ini
 
-## Future Development
+- Aktivitas dibuat melalui fitur simulasi secara manual.
+- Aplikasi belum menerima data dari sensor fisik atau perangkat IoT.
+- Alert terkait kemungkinan jatuh merupakan hasil simulasi, bukan deteksi medis yang tervalidasi.
+- Pengiriman notifikasi secara real-time belum menjadi kemampuan yang dijamin pada versi ini.
+- Integrasi perangkat pemantauan fisik dan penerapan produksi berada di luar cakupan implementasi saat ini.
 
-Potential improvements include:
+## 16. Pengembangan Selanjutnya
 
-- Integration with mmWave radar or other non-camera sensing devices.
-- Real-time activity data ingestion.
-- Machine-learning-based activity classification and fall detection.
-- Notification services for caregivers and family members.
-- More detailed monitoring history and analytics.
-- Stronger privacy controls, data retention policies, and audit logging.
-- Automated testing and production deployment.
+Beberapa pengembangan yang dapat dipertimbangkan pada tahap berikutnya:
 
-## Team Contribution
+- Integrasi dengan radar mmWave atau perangkat sensor non-kamera lainnya.
+- Penerimaan data aktivitas secara real-time.
+- Penerapan machine learning untuk klasifikasi aktivitas dan deteksi jatuh.
+- Pengiriman notifikasi kepada caregiver dan keluarga.
+- Penyajian riwayat pemantauan dan analisis aktivitas yang lebih lengkap.
+- Peningkatan perlindungan privasi, kebijakan penyimpanan data, dan audit aktivitas.
+- Pengujian otomatis serta deployment ke server produksi.
 
-This project is developed collaboratively. Team members contribute to backend development, database management, administrator and caregiver interfaces, simulation, testing, and documentation.
+## 17. Kontribusi Tim
 
-For detailed contributions, refer to the Team table above and the repository commit history.
+CareConnect dikembangkan secara kolaboratif oleh anggota kelompok dengan pembagian pekerjaan pada pengembangan backend, pengelolaan database, antarmuka administrator dan caregiver, fitur simulasi, pengujian, serta dokumentasi.
 
-## License
+Rincian kontribusi setiap anggota dapat dilengkapi pada bagian Identitas Kelompok. Riwayat perubahan kode juga dapat dilihat melalui commit pada repository GitHub.
 
-This project is developed for academic purposes. Unless a separate license is added to this repository, all rights are reserved by the project authors.
+## 18. Lisensi
+
+Proyek ini dikembangkan untuk keperluan akademik. Apabila belum terdapat file lisensi khusus di repository, seluruh hak atas kode dan materi proyek tetap berada pada para pengembang.
 
 ---
 
 <p align="center">
-  <strong>CareConnect — Connecting Caregivers, Supporting Independent Living.</strong>
+  <strong>CareConnect — Menghubungkan Caregiver, Mendukung Kehidupan Lansia yang Mandiri.</strong>
 </p>
