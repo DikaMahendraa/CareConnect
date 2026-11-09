@@ -1,0 +1,54 @@
+<%- include('partials/head', { pageTitle: 'Data lansia', activeMenu: 'residents' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const gender = g => g === 'L' ? 'Laki-laki' : 'Perempuan';
+  const born = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+%>
+<div class="adm-pagehead">
+  <div><h1>Data lansia</h1><p><%= residents.length %> lansia terdaftar</p></div>
+  <div class="adm-pagehead__actions"><a class="cc-btn cc-btn--primary" href="<%= base %>/residents/new"><%- include('partials/icon', { name: 'plus' }) %> Tambah lansia</a></div>
+</div>
+
+<section class="cc-card">
+  <div class="cc-toolbar">
+    <label class="cc-search">
+      <span class="cc-sr">Cari lansia</span>
+      <%- include('partials/icon', { name: 'search' }) %>
+      <input class="cc-input" type="search" placeholder="Cari nama, alamat, atau kontak" data-table-search="#residentTable">
+    </label>
+    <label>
+      <span class="cc-sr">Filter status penugasan</span>
+      <select class="cc-select" data-table-filter="#residentTable">
+        <option value="">Semua status penugasan</option>
+        <option value="assigned">Sudah punya caregiver</option>
+        <option value="unassigned">Belum punya caregiver</option>
+      </select>
+    </label>
+  </div>
+  <div class="cc-table-wrap">
+    <table class="cc-table cc-table--stack" id="residentTable">
+      <thead><tr><th>Lansia</th><th>Usia</th><th>Jenis kelamin</th><th>Alamat</th><th>Kontak keluarga</th><th>Caregiver</th><th class="cc-th-actions">Aksi</th></tr></thead>
+      <tbody>
+        <% residents.forEach(r => { %>
+        <tr data-status="<%= r.caregiver ? 'assigned' : 'unassigned' %>">
+          <td class="cc-td-main"><div class="cc-person"><%- include('partials/avatar', { name: r.fullName }) %><div><a class="cc-person__name" href="<%= base %>/residents/<%= r.id %>"><%= r.fullName %></a></div></div></td>
+          <td data-label="Usia"><%= r.age %> tahun<div class="cc-person__sub"><%= born(r.birthDate) %></div></td>
+          <td data-label="Jenis kelamin"><%= gender(r.gender) %></td>
+          <td data-label="Alamat"><div class="cc-clamp" title="<%= r.address %>"><%= r.address %></div></td>
+          <td data-label="Kontak keluarga"><%= r.familyContactName %><div class="cc-person__sub"><%= r.familyContactPhone %></div></td>
+          <td data-label="Caregiver"><% if (r.caregiver) { %><span class="cc-badge cc-badge--success"><%= r.caregiver.fullName %></span><% } else { %><span class="cc-badge cc-badge--warning">Belum ada caregiver</span><% } %></td>
+          <td class="cc-td-actions"><div class="cc-actions">
+            <a class="cc-iconbtn cc-iconbtn--primary" href="<%= base %>/residents/<%= r.id %>" title="Lihat detail" aria-label="Lihat detail <%= r.fullName %>"><%- include('partials/icon', { name: 'eye' }) %></a>
+            <a class="cc-iconbtn cc-iconbtn--primary" href="<%= base %>/residents/<%= r.id %>/edit" title="Edit" aria-label="Edit <%= r.fullName %>"><%- include('partials/icon', { name: 'edit' }) %></a>
+            <button type="button" class="cc-iconbtn cc-iconbtn--danger" title="Hapus" aria-label="Hapus <%= r.fullName %>"
+              data-delete-url="<%= base %>/residents/<%= r.id %>/delete" data-delete-name="<%= r.fullName %>"
+              data-delete-text="Data lansia dan penugasan caregiver-nya akan ikut terhapus."><%- include('partials/icon', { name: 'trash' }) %></button>
+          </div></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="cc-empty" data-empty <%= residents.length ? 'hidden' : '' %>><strong>Tidak ada lansia ditemukan</strong>Ubah kata kunci atau filter, atau tambahkan data lansia baru.</div>
+  </div>
+</section>
+<%- include('partials/foot') %>

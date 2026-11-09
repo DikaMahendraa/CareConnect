@@ -1,0 +1,7 @@
+<%# Pemakaian: include('partials/avatar', { name: 'Siti Aminah', tone: 'primary'|'teal', size: ''|'lg' }) %>
+<%
+  const __nm = (typeof name !== 'undefined' && name) ? String(name) : '?';
+  const __ini = __nm.trim().split(/\s+/).slice(0, 2).map(s => s[0]).join('').toUpperCase();
+  const __tone = (typeof tone !== 'undefined' && tone === 'teal') ? ' cc-avatar--teal' : '';
+  const __size = (typeof size !== 'undefined' && size === 'lg') ? ' cc-avatar--lg' : '';
+%><span class="cc-avatar<%= __tone %><%= __size %>" aria-hidden="true"><%= __ini %></span>

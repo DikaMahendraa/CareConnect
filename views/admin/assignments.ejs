@@ -1,0 +1,114 @@
+<%- include('partials/head', { pageTitle: 'Penugasan caregiver', activeMenu: 'assignments' }) %>
+<%
+  const base = typeof adminBasePath !== 'undefined' ? adminBasePath : '/admin';
+  const preId = typeof selectedResidentId !== 'undefined' ? String(selectedResidentId) : '';
+  const err = (typeof errors !== 'undefined' && errors) ? errors : {};
+  const since = d => d ? new Date(d).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+  const activeCaregivers = caregivers.filter(c => c.status === 'active');
+%>
+<div class="adm-pagehead">
+  <div><h1>Penugasan caregiver</h1><p>Hubungkan lansia dengan caregiver yang akan memantaunya.</p></div>
+</div>
+<div class="adm-summary">
+  <span class="cc-badge cc-badge--success"><%= assignments.length %> lansia sudah punya caregiver</span>
+  <span class="cc-badge <%= unassignedResidents.length ? 'cc-badge--warning' : 'cc-badge--neutral' %>"><%= unassignedResidents.length %> lansia belum punya caregiver</span>
+</div>
+
+<div class="adm-assign-grid">
+  <section class="cc-card" aria-labelledby="newTitle">
+    <div class="cc-card__head"><div><h2 class="cc-card__title" id="newTitle">Buat penugasan baru</h2><p class="cc-card__sub">Pilih lansia yang belum punya caregiver</p></div></div>
+    <form method="post" action="<%= base %>/assignments" data-assign-form>
+      <%- include('partials/csrf') %>
+      <div class="cc-card__body">
+        <div class="cc-form-grid" style="grid-template-columns:1fr">
+          <div class="cc-field">
+            <label class="cc-label" for="residentId">Lansia <span class="cc-req">*</span></label>
+            <select class="cc-select<%= err.residentId ? ' is-invalid' : '' %>" id="residentId" name="residentId" required <%= unassignedResidents.length ? '' : 'disabled' %>>
+              <option value=""><%= unassignedResidents.length ? 'Pilih lansia' : 'Semua lansia sudah punya caregiver' %></option>
+              <% unassignedResidents.forEach(r => { %><option value="<%= r.id %>" <%= preId === String(r.id) ? 'selected' : '' %>><%= r.fullName %> (<%= r.age %> th)</option><% }) %>
+            </select>
+            <% if (err.residentId) { %><span class="cc-error"><%= err.residentId %></span><% } %>
+          </div>
+          <div class="cc-field">
+            <label class="cc-label" for="caregiverId">Caregiver <span class="cc-req">*</span></label>
+            <select class="cc-select<%= err.caregiverId ? ' is-invalid' : '' %>" id="caregiverId" name="caregiverId" required>
+              <option value="">Pilih caregiver</option>
+              <% activeCaregivers.forEach(c => { %><option value="<%= c.id %>" data-name="<%= c.fullName %>"><%= c.fullName %> &mdash; <%= c.residentCount %> lansia</option><% }) %>
+            </select>
+            <% if (err.caregiverId) { %><span class="cc-error"><%= err.caregiverId %></span><% } else { %><span class="cc-help">Hanya caregiver dengan akun aktif yang ditampilkan.</span><% } %>
+          </div>
+          <div class="adm-preview" data-assign-preview role="status"></div>
+        </div>
+      </div>
+      <div class="cc-form-actions"><button type="submit" class="cc-btn cc-btn--primary" data-assign-submit disabled><%- include('partials/icon', { name: 'link' }) %> Simpan penugasan</button></div>
+    </form>
+  </section>
+
+  <section class="cc-card" aria-labelledby="qTitle">
+    <div class="cc-card__head"><div><h2 class="cc-card__title" id="qTitle">Belum punya caregiver</h2><p class="cc-card__sub">Prioritaskan lansia di daftar ini</p></div></div>
+    <% if (unassignedResidents.length) { %>
+    <ul class="adm-queue">
+      <% unassignedResidents.forEach(r => { %>
+      <li<%- preId === String(r.id) ? ' class="is-selected"' : '' %>>
+        <div class="cc-person"><%- include('partials/avatar', { name: r.fullName }) %><div><a class="cc-person__name" href="<%= base %>/residents/<%= r.id %>"><%= r.fullName %></a><div class="cc-person__sub"><%= r.age %> tahun</div></div></div>
+        <button type="button" class="cc-btn cc-btn--outline cc-btn--sm" data-pick-resident="<%= r.id %>">Pilih</button>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <div class="cc-empty"><strong>Semua lansia sudah tercakup</strong>Tidak ada lansia yang menunggu caregiver.</div>
+    <% } %>
+  </section>
+</div>
+
+<section class="cc-card" aria-labelledby="listTitle">
+  <div class="cc-card__head"><div><h2 class="cc-card__title" id="listTitle">Daftar penugasan</h2><p class="cc-card__sub"><%= assignments.length %> penugasan aktif</p></div></div>
+  <div class="cc-toolbar">
+    <label class="cc-search">
+      <span class="cc-sr">Cari penugasan</span>
+      <%- include('partials/icon', { name: 'search' }) %>
+      <input class="cc-input" type="search" placeholder="Cari nama lansia atau caregiver" data-table-search="#assignTable">
+    </label>
+  </div>
+  <div class="cc-table-wrap">
+    <table class="cc-table cc-table--stack" id="assignTable">
+      <thead><tr><th>Lansia</th><th>Caregiver</th><th>Ditugaskan sejak</th><th class="cc-th-actions">Aksi</th></tr></thead>
+      <tbody>
+        <% assignments.forEach(a => { %>
+        <tr>
+          <td class="cc-td-main"><div class="cc-person"><%- include('partials/avatar', { name: a.residentName }) %><a class="cc-person__name" href="<%= base %>/residents/<%= a.residentId %>"><%= a.residentName %></a></div></td>
+          <td data-label="Caregiver"><div class="cc-person"><%- include('partials/avatar', { name: a.caregiverName, tone: 'teal' }) %><a class="cc-person__name" href="<%= base %>/caregivers/<%= a.caregiverId %>"><%= a.caregiverName %></a></div></td>
+          <td data-label="Ditugaskan sejak"><%= since(a.assignedAt) %></td>
+          <td class="cc-td-actions"><div class="cc-actions">
+            <button type="button" class="cc-iconbtn cc-iconbtn--primary" title="Ubah caregiver" aria-label="Ubah caregiver untuk <%= a.residentName %>"
+              data-edit-assignment data-action="<%= base %>/assignments/<%= a.id %>/update" data-resident="<%= a.residentName %>" data-caregiver-id="<%= a.caregiverId %>"><%- include('partials/icon', { name: 'edit' }) %></button>
+            <button type="button" class="cc-iconbtn cc-iconbtn--danger" title="Hapus penugasan" aria-label="Hapus penugasan <%= a.residentName %>"
+              data-delete-url="<%= base %>/assignments/<%= a.id %>/delete" data-delete-name="penugasan <%= a.residentName %>"
+              data-delete-text="Lansia akan kembali berstatus belum punya caregiver. Data lansia dan caregiver tidak terhapus."><%- include('partials/icon', { name: 'trash' }) %></button>
+          </div></td>
+        </tr>
+        <% }) %>
+      </tbody>
+    </table>
+    <div class="cc-empty" data-empty <%= assignments.length ? 'hidden' : '' %>><strong>Belum ada penugasan</strong>Buat penugasan pertama lewat form di atas.</div>
+  </div>
+</section>
+
+<dialog class="cc-dialog" id="editAssignDialog" aria-labelledby="editAssignTitle">
+  <form method="post" action="#" data-edit-assign-form>
+    <%- include('partials/csrf') %>
+    <div class="cc-dialog__body">
+      <h2 class="cc-dialog__title" id="editAssignTitle">Ubah caregiver</h2>
+      <p class="cc-muted" style="margin-bottom:1rem">Pilih caregiver pengganti untuk <strong data-edit-resident></strong>.</p>
+      <label class="cc-label" for="editCaregiverId">Caregiver</label>
+      <select class="cc-select" id="editCaregiverId" name="caregiverId" required>
+        <% activeCaregivers.forEach(c => { %><option value="<%= c.id %>"><%= c.fullName %> &mdash; <%= c.residentCount %> lansia</option><% }) %>
+      </select>
+    </div>
+    <div class="cc-dialog__foot">
+      <button type="button" class="cc-btn cc-btn--outline" data-dialog-close>Batal</button>
+      <button type="submit" class="cc-btn cc-btn--primary">Simpan perubahan</button>
+    </div>
+  </form>
+</dialog>
+<%- include('partials/foot') %>
