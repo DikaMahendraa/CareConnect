@@ -1,245 +1,203 @@
 <%
   const a = typeof alert !== "undefined" && alert ? alert : {};
-
-  const normalizedStatus = String(a.status || "New").toLowerCase();
-
-  const statusClass = normalizedStatus.replace(/\s+/g, "-");
-
-  const priorityClass = String(a.priority || "medium")
-    .toLowerCase()
-    .replace(/\s+/g, "-");
-
+  const caregiver = typeof caregiverName !== "undefined" && caregiverName ? caregiverName : "Caregiver";
+  const status = a.status || "New";
+  const priority = a.priority || "Medium";
+  const statusKey = status.toLowerCase().replace(/\\s+/g, "-");
+  const priorityKey = priority.toLowerCase().replace(/\\s+/g, "-");
+  const isResolved = status === "Resolved";
+  const isAcknowledged = status === "Acknowledged";
   const fmt = value => {
-    if (!value) return "—";
-
+    if (!value) return "Belum tersedia";
     const date = new Date(value);
-
-    if (Number.isNaN(date.getTime())) return "—";
-
+    if (Number.isNaN(date.getTime())) return "Belum tersedia";
     return date.toLocaleString("id-ID", {
-      dateStyle: "long",
-      timeStyle: "short"
+      day: "2-digit", month: "long", year: "numeric",
+      hour: "2-digit", minute: "2-digit"
     });
   };
-
-  const canAcknowledge = !["acknowledged", "resolved"].includes(normalizedStatus);
-  const canResolve = normalizedStatus !== "resolved";
 %>
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Detail Alert | CareConnect</title>
-
   <link rel="stylesheet" href="/css/alerts.css">
 </head>
-
 <body>
-  <main class="cc-page cc-page--narrow">
-
-    <nav class="cc-breadcrumb">
-      <a href="/caregiver/alerts">Alert Center</a>
-      <span>/</span>
-      <span>Detail alert</span>
+<div class="cc-layout">
+  <aside class="cc-sidebar">
+    <div class="cc-brand">
+      <div class="cc-brand-icon">C</div>
+      <div><h2>CareConnect</h2><span>Caregiver Portal</span></div>
+    </div>
+    <div class="cc-sidebar-label">WORKSPACE</div>
+    <nav class="cc-navigation">
+      <a href="/caregiver/dashboard" class="cc-nav-link">
+        <span class="cc-nav-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></span>
+        <span>Dashboard</span>
+      </a>
+      <a href="/caregiver/residents" class="cc-nav-link">
+        <span class="cc-nav-icon"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1a6 6 0 0 1 12 0v1"/><path d="M16 5a3 3 0 0 1 0 6"/><path d="M18 14a5 5 0 0 1 3 5v1"/></svg></span>
+        <span>Daftar Lansia</span>
+      </a>
+      <a href="/caregiver/monitoring" class="cc-nav-link">
+        <span class="cc-nav-icon"><svg viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg></span>
+        <span>Monitoring</span>
+      </a>
+      <a href="/caregiver/alerts" class="cc-nav-link active">
+        <span class="cc-nav-icon"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/><path d="M10 21h4"/></svg></span>
+        <span>Alert Center</span>
+      </a>
     </nav>
+    <div class="cc-sidebar-bottom">
+      <form action="/logout" method="POST">
+        <button type="submit" class="cc-logout">
+          <svg viewBox="0 0 24 24"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>
+          <span>Log out</span>
+        </button>
+      </form>
+    </div>
+  </aside>
 
-    <header class="cc-page-header">
-      <div>
-        <p class="cc-eyebrow">DETAIL PERINGATAN</p>
-
-        <h1>
-          <%= a.alert_type_label || a.alert_type || "Peringatan" %>
-        </h1>
-
-        <p class="cc-muted">
-          Tinjau informasi kejadian dan catat tindakan pemeriksaan.
-        </p>
+  <main class="cc-main">
+    <header class="cc-topbar">
+      <div class="cc-breadcrumb">
+        Caregiver <span>/</span> <a href="/caregiver/alerts">Alert Center</a> <span>/</span> <strong>Detail Alert</strong>
       </div>
-
-      <span class="cc-pill cc-status cc-status--<%= statusClass %>">
-        <%= a.status || "New" %>
-      </span>
+      <div class="cc-topbar-right">
+        <div class="cc-workspace-status"><span class="cc-status-dot"></span> Caregiver Workspace</div>
+        <div class="cc-topbar-profile">
+          <div class="cc-topbar-avatar"><%= caregiver.charAt(0).toUpperCase() %></div>
+          <div class="cc-topbar-profile-info"><strong><%= caregiver %></strong><span>Caregiver</span></div>
+        </div>
+      </div>
     </header>
 
-    <% if (typeof error !== "undefined" && error) { %>
-      <div class="cc-message cc-message--error" role="alert">
-        <%= error %>
-      </div>
-    <% } %>
+    <section class="cc-content cc-detail-content">
+      <a href="/caregiver/alerts" class="cc-back-link">← Kembali ke Alert Center</a>
 
-    <% if (typeof success !== "undefined" && success) { %>
-      <div class="cc-message cc-message--success" role="status">
-        <%= success %>
-      </div>
-    <% } %>
-
-    <!-- Informasi kejadian -->
-    <section class="cc-panel">
-
-      <div class="cc-panel-heading">
-        <h2>Informasi kejadian</h2>
-
-        <span class="cc-pill cc-priority cc-priority--<%= priorityClass %>">
-          <%= a.priority || "Medium" %> priority
-        </span>
+      <div class="cc-detail-heading">
+        <div>
+          <span class="cc-eyebrow">ALERT MANAGEMENT / DETAIL</span>
+          <h1>Detail Peringatan</h1>
+          <p>Periksa informasi kejadian dan catat tindak lanjut terhadap lansia.</p>
+        </div>
+        <span class="cc-status <%= statusKey %> cc-detail-status"><%= status %></span>
       </div>
 
-      <dl class="cc-detail-grid">
-
-        <div>
-          <dt>Nama lansia</dt>
-          <dd><%= a.resident_name || "—" %></dd>
-        </div>
-
-        <div>
-          <dt>Jenis peringatan</dt>
-          <dd><%= a.alert_type_label || a.alert_type || "—" %></dd>
-        </div>
-
-        <div>
-          <dt>Waktu kejadian</dt>
-          <dd><%= fmt(a.occurred_at) %></dd>
-        </div>
-
-        <div>
-          <dt>Status saat ini</dt>
-          <dd><%= a.status || "New" %></dd>
-        </div>
-
-        <div class="cc-detail-grid__wide">
-          <dt>Deskripsi</dt>
-          <dd>
-            <%= a.description || "Tidak ada deskripsi tambahan." %>
-          </dd>
-        </div>
-
-      </dl>
-    </section>
-
-    <!-- Tindak lanjut caregiver -->
-    <section class="cc-panel">
-
-      <div class="cc-panel-heading">
-        <div>
-          <h2>Tindak lanjut caregiver</h2>
-
-          <p class="cc-muted">
-            Simpan catatan pemeriksaan agar tindakan dapat ditelusuri.
-          </p>
-        </div>
-      </div>
-
-      <% if (a.acknowledged_by_name || a.acknowledged_at) { %>
-
-        <div class="cc-handling-meta">
-          <strong>Diakui oleh</strong>
-
-          <span>
-            <%= a.acknowledged_by_name || "Caregiver" %>
-            ·
-            <%= fmt(a.acknowledged_at) %>
-          </span>
-        </div>
-
+      <% if (success) { %>
+        <div class="cc-detail-message success" role="status"><span>✓</span> <%= success %></div>
+      <% } %>
+      <% if (error) { %>
+        <div class="cc-detail-message error" role="alert"><%= error %></div>
       <% } %>
 
-      <% if (a.resolved_by_name || a.resolved_at) { %>
-
-        <div class="cc-handling-meta">
-          <strong>Diselesaikan oleh</strong>
-
-          <span>
-            <%= a.resolved_by_name || "Caregiver" %>
-            ·
-            <%= fmt(a.resolved_at) %>
-          </span>
+      <section class="cc-detail-hero">
+        <div class="cc-detail-alert-icon <%= priorityKey %>">
+          <svg viewBox="0 0 24 24"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5"/><path d="M12 17h.01"/></svg>
         </div>
+        <div class="cc-detail-hero-copy">
+          <span class="cc-detail-kicker">JENIS PERINGATAN</span>
+          <h2><%= a.alert_type || "Activity Alert" %></h2>
+          <p><%= a.description || "Tidak ada deskripsi tambahan untuk kejadian ini." %></p>
+        </div>
+        <div class="cc-detail-priority <%= priorityKey %>">
+          <span>PRIORITAS</span>
+          <strong><%= priority %></strong>
+        </div>
+      </section>
 
-      <% } %>
+      <div class="cc-detail-columns">
+        <div class="cc-detail-main-column">
+          <section class="cc-detail-card">
+            <div class="cc-detail-card-heading">
+              <div><span class="cc-detail-section-index">01</span><h2>Informasi kejadian</h2></div>
+              <span class="cc-detail-card-caption">RINGKASAN ALERT</span>
+            </div>
+            <div class="cc-detail-info-grid">
+              <div class="cc-detail-info-item">
+                <span>Nama lansia</span><strong><%= a.resident_name || "Tidak diketahui" %></strong>
+              </div>
+              <div class="cc-detail-info-item">
+                <span>ID peringatan</span><strong>#CC-<%= a.id %></strong>
+              </div>
+              <div class="cc-detail-info-item">
+                <span>Waktu kejadian</span><strong><%= fmt(a.occurred_at) %></strong>
+              </div>
+              <div class="cc-detail-info-item">
+                <span>Status penanganan</span><strong><%= status %></strong>
+              </div>
+            </div>
+            <div class="cc-detail-description">
+              <span>Deskripsi kejadian</span>
+              <p><%= a.description || "Tidak ada deskripsi tambahan untuk kejadian ini." %></p>
+            </div>
+          </section>
 
-      <% if (canAcknowledge || canResolve) { %>
-
-        <form
-          class="cc-followup-form"
-          method="POST"
-          action="/caregiver/alerts/<%= encodeURIComponent(a.id || "") %>/follow-up"
-        >
-
-          <label for="caregiver-note">
-            Catatan pemeriksaan
-          </label>
-
-          <textarea
-            id="caregiver-note"
-            name="note"
-            rows="4"
-            maxlength="2000"
-            placeholder="Contoh: Menghubungi keluarga, memeriksa kondisi lansia, atau memastikan perangkat aktif."
-          ><%= a.caregiver_note || "" %></textarea>
-
-          <p class="cc-field-hint">
-            Maksimal 2.000 karakter. Hindari memasukkan informasi yang tidak relevan.
-          </p>
-
-          <div class="cc-form-actions">
-
-            <% if (canAcknowledge) { %>
-
-              <button
-                class="cc-button cc-button--secondary"
-                type="submit"
-                name="action"
-                value="acknowledge"
-              >
-                Acknowledge
-              </button>
-
+          <section class="cc-detail-card">
+            <div class="cc-detail-card-heading">
+              <div><span class="cc-detail-section-index">02</span><h2>Riwayat tindak lanjut</h2></div>
+              <span class="cc-detail-card-caption">ACTIVITY LOG</span>
+            </div>
+            <div class="cc-detail-timeline">
+              <% if (a.acknowledged_by_name || a.acknowledged_at) { %>
+                <div class="cc-timeline-item">
+                  <span class="cc-timeline-marker acknowledged"></span>
+                  <div><strong>Alert diakui</strong><p><%= a.acknowledged_by_name || "Caregiver" %> meninjau peringatan ini.</p><time><%= fmt(a.acknowledged_at) %></time></div>
+                </div>
+              <% } %>
+              <% if (a.resolved_by_name || a.resolved_at) { %>
+                <div class="cc-timeline-item">
+                  <span class="cc-timeline-marker resolved"></span>
+                  <div><strong>Alert diselesaikan</strong><p><%= a.resolved_by_name || "Caregiver" %> menandai peringatan telah ditangani.</p><time><%= fmt(a.resolved_at) %></time></div>
+                </div>
+              <% } %>
+              <% if (!a.acknowledged_by_name && !a.acknowledged_at && !a.resolved_by_name && !a.resolved_at) { %>
+                <div class="cc-detail-empty-history">
+                  <span>◷</span><div><strong>Belum ada tindak lanjut</strong><p>Riwayat tindakan caregiver akan muncul di bagian ini.</p></div>
+                </div>
+              <% } %>
+            </div>
+            <% if (a.caregiver_note) { %>
+              <div class="cc-detail-saved-note"><span>CATATAN TERAKHIR</span><p><%= a.caregiver_note %></p></div>
             <% } %>
-
-            <% if (canResolve) { %>
-
-              <button
-                class="cc-button cc-button--primary"
-                type="submit"
-                name="action"
-                value="resolve"
-              >
-                Tandai Resolved
-              </button>
-
-            <% } %>
-
-          </div>
-
-        </form>
-
-      <% } else { %>
-
-        <div class="cc-message cc-message--success">
-          Peringatan ini sudah berstatus Resolved.
+          </section>
         </div>
 
-        <% if (a.caregiver_note) { %>
-
-          <div class="cc-note-display">
-            <strong>Catatan pemeriksaan</strong>
-
-            <p><%= a.caregiver_note %></p>
+        <aside class="cc-detail-side-column">
+          <section class="cc-detail-action-card">
+            <div class="cc-detail-action-heading">
+              <span class="cc-detail-action-icon">✓</span>
+              <div><h2>Tindak lanjut</h2><p>Catat hasil pemeriksaan alert.</p></div>
+            </div>
+            <% if (!isResolved) { %>
+              <form class="cc-detail-followup" method="POST" action="/caregiver/alerts/<%= encodeURIComponent(a.id || "") %>/follow-up">
+                <label for="caregiver-note">Catatan pemeriksaan</label>
+                <textarea id="caregiver-note" name="note" rows="6" maxlength="2000" placeholder="Tuliskan tindakan yang dilakukan, misalnya menghubungi keluarga atau memastikan kondisi lansia."><%= a.caregiver_note || "" %></textarea>
+                <small>Maksimal 2.000 karakter. Catatan akan tersimpan sebagai riwayat tindak lanjut.</small>
+                <% if (!isAcknowledged) { %>
+                  <button class="cc-detail-button secondary" type="submit" name="action" value="acknowledge">Tandai telah ditinjau</button>
+                <% } %>
+                <button class="cc-detail-button primary" type="submit" name="action" value="resolve">Selesaikan alert</button>
+              </form>
+            <% } else { %>
+              <div class="cc-detail-resolved-state">
+                <span>✓</span><strong>Alert telah diselesaikan</strong>
+                <p>Peringatan ini sudah ditandai selesai. Tidak diperlukan tindakan lanjutan.</p>
+              </div>
+            <% } %>
+          </section>
+          <div class="cc-detail-guidance">
+            <strong>Informasi penting</strong>
+            <p>Alert pada CareConnect versi ini berasal dari simulasi aktivitas. Pastikan informasi kejadian diperiksa sebelum melakukan tindak lanjut.</p>
           </div>
-
-        <% } %>
-
-      <% } %>
-
+        </aside>
+      </div>
+      <footer class="cc-footer"><span>CARECONNECT</span><span>Connecting Caregivers, Supporting Independent Living.</span></footer>
     </section>
-
-    <a class="cc-back-link" href="/caregiver/alerts">
-      ← Kembali ke Alert Center
-    </a>
-
   </main>
+</div>
 </body>
 </html>
